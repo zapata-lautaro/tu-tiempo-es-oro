@@ -1,0 +1,16 @@
+html {
+    background: #303134;
+    color: white;
+}
+
+body {
+    padding: 0 1rem 1rem 1rem;
+}
+
+h1 {
+    text-align: center;
+}
+
+.salary {
+    display: flex;
+}
