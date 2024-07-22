@@ -4,19 +4,19 @@
     "description": "Transforma los precios de los productos a tiempo en base a tu sueldo",
     "version": "1.0",
     "action": {
-      "default_popup": "popup/popup.html",
-      "default_icon": "tutiempoesoro_icon.png"
+      "default_popup": "src/popup/index.html",
+      "default_icon": "icons/tutiempoesoro_icon.png"
     },
     "content_scripts": [
         {
-            "js": ["scripts/content.js"],
+            "js": ["src/content.js"],
             "matches": [
                 "https://www.mercadolibre.com.ar/*"
             ]
         }
     ],
     "background": {
-        "service_worker": "service-worker.js",
+        "service_worker": "src/background.js",
         "type": "module"
     },
     "permissions": [

@@ -1,8 +1,8 @@
 const FALLBACK_DOLAR_BID = 1400;
 const FALLBACK_DOLAR_ASK = 1450;
 
-const salaryInput = document.getElementById('salary');
-const currencySelect = document.getElementById('currency');
+const salaryInput = document.getElementById('salary')! as HTMLInputElement;
+const currencySelect = document.getElementById('currency')! as HTMLSelectElement;
 
 salaryInput.oninput = currencySelect.onchange = debounce(handleSalaryChange);
 
@@ -17,7 +17,7 @@ document.body.onload = () => {
 }
 
 async function handleSalaryChange() {
-    const salary = salaryInput.value;
+    const salary = +salaryInput.value;
     const currency = currencySelect.value;
 
     console.log({salary, currency});
@@ -37,14 +37,15 @@ async function handleSalaryChange() {
     }
 }
 
-function roundMoney(value) {
+function roundMoney(value: number) {
     return Math.round(value * 100) / 100;
 }
 
-function debounce(func, timeout = 300){
-    let timer;
-    return (...args) => {
+function debounce(func: any, timeout = 300){
+    let timer: number;
+    console.log("debounce");
+    return (...args: any) => {
         clearTimeout(timer);
-        timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        timer = setTimeout(() => { func(args); }, timeout);
     };
 }

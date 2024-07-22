@@ -29,7 +29,7 @@ function replacePricesByTime() {
   if (!prices) return;
 
   prices.forEach(priceElement => {
-    const price = priceElement.textContent.replaceAll('.', '');
+    const price = +priceElement!.textContent!.replace('.', '');
 
     priceElement.replaceWith(`${getPriceStringRepresentationInWorkingTime(price)}`);
   });
@@ -41,11 +41,11 @@ function replacePricesByTime() {
 
   const cents = document.querySelectorAll(".andes-money-amount__cents");
   cents.forEach(centElement => {
-    centElement.style.display = 'none';
+    (centElement as HTMLElement).style.display = 'none';
   });
 }
 
-function getPriceStringRepresentationInWorkingTime(price) {
+function getPriceStringRepresentationInWorkingTime(price: number) {
   let years = price / (salary * 12);
 
   if(Math.floor(years) > 0) {
@@ -75,10 +75,10 @@ function getPriceStringRepresentationInWorkingTime(price) {
   }
 }
 
-function debounce(func, timeout = 300){
-  let timer;
-  return (...args) => {
+function debounce(func: any, timeout = 300){
+  let timer: number ;
+  return (...args: any) => {
       clearTimeout(timer);
-      timer = setTimeout(() => { func.apply(this, args); }, timeout);
+      timer = setTimeout(() => { func(args); }, timeout);
   };
 }

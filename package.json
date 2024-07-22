@@ -1,0 +1,17 @@
+{
+  "name": "tu-tiempo-es-oro",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite serve src/popup",
+    "build": "tsc && vite build --config vite-popup.config.js && vite build --config vite-content.config.js && vite build --config vite-background.config.js",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "chrome-types": "^0.1.293",
+    "typescript": "^5.2.2",
+    "vite": "^5.3.4"
+  }
+}
