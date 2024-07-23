@@ -1,3 +1,6 @@
+import { debounce } from "./utils/utils";
+import PriceConverter from "./utils/price-converter";
+
 let salary = 0;
 const hoursPerMonth = 160;
 const hoursPerLaboralDay = 8;
@@ -27,11 +30,15 @@ function replacePricesByTime() {
   const prices = document.querySelectorAll(".andes-money-amount__fraction");
 
   if (!prices) return;
+  const priceConverter = new PriceConverter(
+    salary,
+    hoursPerMonth,
+    hoursPerLaboralDay);
 
   prices.forEach(priceElement => {
     const price = +priceElement!.textContent!.replace('.', '');
 
-    priceElement.replaceWith(`${getPriceStringRepresentationInWorkingTime(price)}`);
+    priceElement.replaceWith(`${priceConverter.getStringRepresentation(price)}`);
   });
 
   const currencySimbols = document.querySelectorAll(".andes-money-amount__currency-symbol");  
@@ -43,42 +50,4 @@ function replacePricesByTime() {
   cents.forEach(centElement => {
     (centElement as HTMLElement).style.display = 'none';
   });
-}
-
-function getPriceStringRepresentationInWorkingTime(price: number) {
-  let years = price / (salary * 12);
-
-  if(Math.floor(years) > 0) {
-    years = Math.round(years);
-    return `${years} año${years > 1 ? 's' : ''}`;
-  }
-
-  let months = price / salary;
-
-  if(Math.floor(months) > 0) {
-    months = Math.round(months);
-    return `${months} mes${months > 1 ? 'es' : ''}`;
-  }
-
-  let days = price / (salary / hoursPerMonth * hoursPerLaboralDay);
-
-  if(Math.floor(days) > 0) {
-    days = Math.round(days);
-    return `${days} día${days > 1 ? 's' : ''}`;
-  }
-
-  let hours = price / (salary / hoursPerMonth);
-
-  if(Math.floor(hours) > 0) {
-    hours = Math.round(hours);
-    return `${hours} hora${hours > 1 ? 's' : ''}`;
-  }
-}
-
-function debounce(func: any, timeout = 300){
-  let timer: number ;
-  return (...args: any) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { func(args); }, timeout);
-  };
 }

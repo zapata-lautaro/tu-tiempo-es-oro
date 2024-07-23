@@ -1,0 +1,26 @@
+{
+    "manifest_version": 3,
+    "name": "Tu tiempo es oro",
+    "description": "Transforma los precios de los productos a tiempo en base a tu sueldo",
+    "version": "1.0",
+    "action": {
+      "default_popup": "popup/index.html",
+      "default_icon": "icons/tutiempoesoro_icon.png"
+    },
+    "content_scripts": [
+        {
+            "js": ["content.js"],
+            "matches": [
+                "https://www.mercadolibre.com.ar/*"
+            ]
+        }
+    ],
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
+    "permissions": [
+        "scripting",
+        "storage"
+    ]
+}

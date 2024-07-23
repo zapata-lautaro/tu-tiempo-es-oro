@@ -1,3 +1,5 @@
+import { debounce } from "../utils/utils";
+
 const FALLBACK_DOLAR_BID = 1400;
 const FALLBACK_DOLAR_ASK = 1450;
 
@@ -39,13 +41,4 @@ async function handleSalaryChange() {
 
 function roundMoney(value: number) {
     return Math.round(value * 100) / 100;
-}
-
-function debounce(func: any, timeout = 300){
-    let timer: number;
-    console.log("debounce");
-    return (...args: any) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => { func(args); }, timeout);
-    };
 }
