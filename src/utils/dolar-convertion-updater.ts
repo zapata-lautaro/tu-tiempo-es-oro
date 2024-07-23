@@ -23,7 +23,7 @@ export default async function updateDolarConvertionIfOutdated() {
     try {
         const storage = await chrome.storage.sync.get();
         
-        if(!storage.hasOwnProperty("dolarConvertion")) {
+        if(!Object.prototype.hasOwnProperty.call(storage, "dolarConvertion")) {
             update();
         }
 

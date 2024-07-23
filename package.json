@@ -2,20 +2,26 @@
   "name": "tu-tiempo-es-oro",
   "version": "1.0.0",
   "description": "See product prices as time based on user salary",
-  "main": "index.js",
   "scripts": {
     "dev": "webpack serve --config webpack.dev.cjs",
     "build": "webpack --config webpack.prod.cjs",
-    "help": "webpack serve --help"
+    "help": "webpack serve --help",
+    "lint": "npx eslint ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "^9.7.0",
     "@types/chrome": "^0.0.268",
+    "@typescript-eslint/eslint-plugin": "^7.17.0",
+    "@typescript-eslint/parser": "^7.17.0",
     "copy-webpack-plugin": "^12.0.2",
+    "eslint": "^9.7.0",
+    "globals": "^15.8.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.5.4",
+    "typescript-eslint": "^7.17.0",
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4",
