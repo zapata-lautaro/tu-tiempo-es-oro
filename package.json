@@ -6,18 +6,18 @@
     "dev": "webpack serve --config webpack.dev.cjs",
     "build": "webpack --config webpack.prod.cjs",
     "help": "webpack serve --help",
-    "lint": "npx eslint ."
+    "lint": "eslint --ext .ts,.js --max-warnings=0 ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@eslint/js": "^9.7.0",
+    "@eslint/js": "^8.57.0",
     "@types/chrome": "^0.0.268",
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "@typescript-eslint/parser": "^7.17.0",
     "copy-webpack-plugin": "^12.0.2",
-    "eslint": "^9.7.0",
+    "eslint": "^8.57.0",
     "globals": "^15.8.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.5.4",
