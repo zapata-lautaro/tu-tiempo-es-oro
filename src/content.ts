@@ -1,35 +1,36 @@
 import { debounce } from './utils/utils';
 import PriceConverter from './utils/price-converter';
+import { getStorageData } from './utils/storage-service';
 
-let salary = 0;
-const hoursPerMonth = 160;
-const hoursPerLaboralDay = 8;
-
-// Select the node that will be observed for mutations
-const targetNode = document.getElementsByTagName('body')[0];
-
-// Options for the observer (which mutations to observe)
-const config = { attributes: true, childList: true, subtree: true };
-
-chrome.storage.sync.get().then((storage) => {
-  if (!storage.pesosSalary) return;
-
-  salary = storage.pesosSalary;
-
-  const observer = new MutationObserver(debounce(replacePricesByTime, 500));
-
-  // Start observing the target node for configured mutations
-  observer.observe(targetNode, config);
+getStorageData().then((storageData) => {
+  const observer = new MutationObserver(
+    debounce(() => {
+      replacePricesByTime(
+        storageData.pesosSalary,
+        storageData.hoursPerMonth,
+        storageData.hoursPerLaboralDay,
+      );
+    }, 500),
+  );
+  observer.observe(document.getElementsByTagName('body')[0], {
+    attributes: true,
+    childList: true,
+    subtree: true,
+  });
 });
 
-function replacePricesByTime() {
+function replacePricesByTime(
+  pesosSalary: number,
+  hoursPerMonth: number,
+  hoursPerLaboralDay: number,
+) {
   console.log('replacing prices...');
 
   const prices = document.querySelectorAll('.andes-money-amount__fraction');
 
   if (!prices) return;
   const priceConverter = new PriceConverter(
-    salary,
+    pesosSalary,
     hoursPerMonth,
     hoursPerLaboralDay,
   );

@@ -1,3 +1,6 @@
+import { DolarConvertion } from './models/storage-data';
+import { getStorageData, setStorageItem } from './storage-service';
+
 async function getDolarPriceFromApi() {
   const response = await fetch('https://dolarapi.com/v1/dolares/blue');
   const jsonResponse = await response.json();
@@ -8,31 +11,30 @@ async function getDolarPriceFromApi() {
   };
 }
 
-async function update() {
+export async function getConversion(): Promise<DolarConvertion> {
   const { bid, ask } = await getDolarPriceFromApi();
-  await chrome.storage.sync.set({
-    dolarConvertion: {
-      updatedOn: Date.now(),
-      bid,
-      ask,
-    },
-  });
+  return {
+    updatedOn: Date.now(),
+    bid,
+    ask,
+  };
 }
 
-export default async function updateDolarConvertionIfOutdated() {
+export default async function updateDolarConvertionIfOutdated(): Promise<void> {
   try {
-    const storage = await chrome.storage.sync.get();
+    const storageData = await getStorageData();
 
-    if (!Object.prototype.hasOwnProperty.call(storage, 'dolarConvertion')) {
-      update();
+    if (
+      Object.prototype.hasOwnProperty.call(storageData, 'dolarConvertion') &&
+      new Date().getDate() ==
+        new Date(storageData.dolarConvertion.updatedOn).getDate()
+    ) {
+      return;
     }
 
-    const updatedOnDate = new Date(storage.dolarConvertion.updatedOn);
-    const now = new Date();
+    const updatedConvertion = await getConversion();
 
-    if (updatedOnDate.getDate() < now.getDate()) {
-      update();
-    }
+    return setStorageItem('dolarConvertion', updatedConvertion);
   } catch (e) {
     console.log(e);
   }
