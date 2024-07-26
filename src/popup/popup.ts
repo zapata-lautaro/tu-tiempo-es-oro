@@ -1,4 +1,4 @@
-import { debounce } from '../utils/utils';
+import { debounce } from '../application/utils';
 
 const FALLBACK_DOLAR_BID = 1400;
 const FALLBACK_DOLAR_ASK = 1450;

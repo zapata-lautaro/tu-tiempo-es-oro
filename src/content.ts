@@ -1,15 +1,12 @@
-import { debounce } from './utils/utils';
-import PriceConverter from './utils/price-converter';
-import { getStorageData } from './utils/storage-service';
+import { debounce } from './application/utils';
+import PriceConverter from './application/price-converter';
+import { getStorageData } from './application/storage-service';
+import { JobInformation } from './models/job-information';
 
 getStorageData().then((storageData) => {
   const observer = new MutationObserver(
     debounce(() => {
-      replacePricesByTime(
-        storageData.pesosSalary,
-        storageData.hoursPerMonth,
-        storageData.hoursPerLaboralDay,
-      );
+      replacePricesByTime(storageData.jobInformation);
     }, 500),
   );
   observer.observe(document.getElementsByTagName('body')[0], {
@@ -19,27 +16,20 @@ getStorageData().then((storageData) => {
   });
 });
 
-function replacePricesByTime(
-  pesosSalary: number,
-  hoursPerMonth: number,
-  hoursPerLaboralDay: number,
-) {
+function replacePricesByTime(jobInformation: JobInformation) {
   console.log('replacing prices...');
 
   const prices = document.querySelectorAll('.andes-money-amount__fraction');
 
   if (!prices) return;
-  const priceConverter = new PriceConverter(
-    pesosSalary,
-    hoursPerMonth,
-    hoursPerLaboralDay,
-  );
+  const priceConverter = new PriceConverter(jobInformation);
 
   prices.forEach((priceElement) => {
     const price = +priceElement!.textContent!.replace('.', '');
+    const priceConvertion = priceConverter.getConvertion(price);
 
     priceElement.replaceWith(
-      `${priceConverter.getStringRepresentation(price)}`,
+      `${priceConvertion.toShortStringRepresentation()}`,
     );
   });
 

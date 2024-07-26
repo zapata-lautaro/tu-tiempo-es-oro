@@ -1,5 +1,5 @@
-import { DolarConvertion } from './models/storage-data';
-import { getStorageData, setStorageItem } from './storage-service';
+import { DolarConvertion } from '../models/dolar-convertion';
+import { getStorageData, setStorageData } from './storage-service';
 
 async function getDolarPriceFromApi() {
   const response = await fetch('https://dolarapi.com/v1/dolares/blue');
@@ -33,8 +33,9 @@ export default async function updateDolarConvertionIfOutdated(): Promise<void> {
     }
 
     const updatedConvertion = await getConversion();
+    storageData.dolarConvertion = updatedConvertion;
 
-    return setStorageItem('dolarConvertion', updatedConvertion);
+    return setStorageData(storageData);
   } catch (e) {
     console.log(e);
   }
