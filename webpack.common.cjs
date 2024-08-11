@@ -1,19 +1,23 @@
 const path = require('path');
-const CopyPlugin = require("copy-webpack-plugin");
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
     background: './src/background.ts',
     content: './src/content.ts',
-    popup: './src/popup/popup.ts'
+    popup: './src/popup/popup.ts',
   },
   module: {
     rules: [
-        {
-            test: /\.tsx?$/,
-            use: 'ts-loader',
-            exclude: /node_modules/
-        },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: ['css-loader'],
+      },
     ],
   },
   resolve: {
@@ -27,14 +31,14 @@ module.exports = {
   plugins: [
     new CopyPlugin({
       patterns: [
-        { from: "src/static" },
+        { from: 'src/static' },
         {
           from: path.resolve(__dirname, 'src/popup'),
           to: path.resolve(__dirname, 'dist/popup'),
           globOptions: {
-            ignore: ['**/*.{js,ts}']
+            ignore: ['**/*.{js,ts}'],
           },
-        }
+        },
       ],
     }),
   ],

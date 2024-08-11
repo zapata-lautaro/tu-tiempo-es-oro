@@ -10,7 +10,8 @@
   "content_scripts": [
     {
       "js": ["content.js"],
-      "matches": ["https://www.mercadolibre.com.ar/*"]
+      "matches": ["https://www.mercadolibre.com.ar/*"],
+      "css": ["styles/content.css"]
     }
   ],
   "background": {
