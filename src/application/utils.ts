@@ -10,3 +10,7 @@ export function debounce<F extends (...args: unknown[]) => unknown>(
     }, timeout);
   };
 }
+
+export function roundMoney(value: number) {
+  return Math.round(value * 100) / 100;
+}

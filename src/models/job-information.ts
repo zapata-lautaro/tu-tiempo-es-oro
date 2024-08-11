@@ -1,50 +1,90 @@
 import { Currency } from './currency.enum';
+import { TimeConvertion } from './time-convertion';
 
 export interface JobInformationProps {
-  hoursPerMonth: number;
+  laboralDaysPerWeek: number;
   hoursPerLaboralDay: number;
-  salary: number;
   currency: Currency;
+  usdSalary: number;
+  pesosSalary: number;
 }
 
 export class JobInformation implements JobInformationProps {
   constructor(
-    public hoursPerMonth: number,
+    public laboralDaysPerWeek: number,
     public hoursPerLaboralDay: number,
-    public salary: number,
     public currency: Currency,
+    public pesosSalary: number,
+    public usdSalary: number,
   ) {}
 
   public static fromJson(json: JobInformationProps): JobInformation {
     return new JobInformation(
-      json.hoursPerMonth,
+      json.laboralDaysPerWeek,
       json.hoursPerLaboralDay,
-      json.salary,
       json.currency,
+      json.pesosSalary,
+      json.usdSalary,
     );
   }
 
-  public anualSalary(): number {
-    return this.salary * 12;
+  get hoursPerMonth(): number {
+    return this.hoursPerLaboralDay * this.laboralDaysPerWeek * 4;
   }
 
-  public monthlySalary(): number {
-    return this.salary;
+  public salaryInOriginalCurrency(): number {
+    return this.salaryInCurrency(this.currency);
   }
 
-  public weeklySalary(): number {
-    return this.salary / 4;
+  private salaryInCurrency(currency: Currency): number {
+    return currency == Currency.ARS ? this.pesosSalary : this.usdSalary;
   }
 
-  public dailySalary(): number {
-    return (this.salary / this.hoursPerMonth) * this.hoursPerLaboralDay;
+  private anualSalary(currency: Currency): number {
+    return this.salaryInCurrency(currency) * 12;
   }
 
-  public hourlySalary(): number {
-    return this.salary / this.hoursPerMonth;
+  private monthlySalary(currency: Currency): number {
+    return this.salaryInCurrency(currency);
   }
 
-  public perMinuteSalary(): number {
-    return this.hourlySalary() / 60;
+  private weeklySalary(currency: Currency): number {
+    return this.salaryInCurrency(currency) / 4;
+  }
+
+  private dailySalary(currency: Currency): number {
+    return (
+      (this.salaryInCurrency(currency) / this.hoursPerMonth) *
+      this.hoursPerLaboralDay
+    );
+  }
+
+  private hourlySalary(currency: Currency): number {
+    return this.salaryInCurrency(currency) / this.hoursPerMonth;
+  }
+
+  private perMinuteSalary(currency: Currency): number {
+    return this.hourlySalary(currency) / 60;
+  }
+
+  public getConvertion(price: number, currency: Currency): TimeConvertion {
+    const years = Math.floor(price / this.anualSalary(currency));
+    let remainingPrice = price % this.anualSalary(currency);
+
+    const months = Math.floor(remainingPrice / this.monthlySalary(currency));
+    remainingPrice -= remainingPrice % this.monthlySalary(currency);
+
+    const weeks = Math.floor(remainingPrice / this.weeklySalary(currency));
+    remainingPrice -= remainingPrice % this.weeklySalary(currency);
+
+    const days = Math.floor(remainingPrice / this.dailySalary(currency));
+    remainingPrice -= remainingPrice % this.dailySalary(currency);
+
+    const hours = Math.floor(remainingPrice / this.hourlySalary(currency));
+    remainingPrice -= remainingPrice % this.hourlySalary(currency);
+
+    const minutes = Math.ceil(remainingPrice / this.perMinuteSalary(currency));
+
+    return new TimeConvertion(years, months, weeks, days, hours, minutes);
   }
 }

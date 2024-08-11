@@ -3,23 +3,13 @@ import { Currency } from './models/currency.enum';
 import { initializeStorageWithDefaults } from './application/storage-service';
 
 chrome.runtime.onInstalled.addListener(async () => {
-  let updatedDolarConvertion;
-  try {
-    updatedDolarConvertion = await getConversion();
-  } catch (e) {
-    console.log(e);
-    updatedDolarConvertion = {
-      updatedOn: Date.now(),
-      ask: 1400,
-      bid: 1450,
-    };
-  }
   await initializeStorageWithDefaults({
-    dolarConvertion: updatedDolarConvertion,
+    dolarConvertion: await getConversion(),
     jobInformation: {
-      hoursPerMonth: 160,
-      hoursPerLaboralDay: 8,
-      salary: 100000,
+      laboralDaysPerWeek: 0,
+      hoursPerLaboralDay: 0,
+      usdSalary: 0,
+      pesosSalary: 0,
       currency: Currency.ARS,
     },
   });

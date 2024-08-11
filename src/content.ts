@@ -1,7 +1,7 @@
 import { debounce } from './application/utils';
-import PriceConverter from './application/price-converter';
 import { getStorageData } from './application/storage-service';
 import { JobInformation } from './models/job-information';
+import { MeliPriceConverter } from './application/converters/meli-price-converter';
 
 getStorageData().then((storageData) => {
   const observer = new MutationObserver(
@@ -19,29 +19,7 @@ getStorageData().then((storageData) => {
 function replacePricesByTime(jobInformation: JobInformation) {
   console.log('replacing prices...');
 
-  const prices = document.querySelectorAll('.andes-money-amount__fraction');
+  const meliPriceConverter = new MeliPriceConverter(document, jobInformation);
 
-  if (!prices) return;
-  const priceConverter = new PriceConverter(jobInformation);
-
-  prices.forEach((priceElement) => {
-    const price = +priceElement!.textContent!.replace('.', '');
-    const priceConvertion = priceConverter.getConvertion(price);
-
-    priceElement.replaceWith(
-      `${priceConvertion.toShortStringRepresentation()}`,
-    );
-  });
-
-  const currencySimbols = document.querySelectorAll(
-    '.andes-money-amount__currency-symbol',
-  );
-  currencySimbols.forEach((simbolElement) => {
-    simbolElement.replaceWith(`⏱️`);
-  });
-
-  const cents = document.querySelectorAll('.andes-money-amount__cents');
-  cents.forEach((centElement) => {
-    (centElement as HTMLElement).style.display = 'none';
-  });
+  meliPriceConverter.convert();
 }

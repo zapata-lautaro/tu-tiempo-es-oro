@@ -1,8 +1,10 @@
-import { DolarConvertion } from '../models/dolar-convertion';
+import { DolarConvertionProps } from '../models/dolar-convertion';
 import { getStorageData, setStorageData } from './storage-service';
 
+const dolarApiUrl = 'https://dolarapi.com/v1/dolares/blue';
+
 async function getDolarPriceFromApi() {
-  const response = await fetch('https://dolarapi.com/v1/dolares/blue');
+  const response = await fetch(dolarApiUrl);
   const jsonResponse = await response.json();
 
   return {
@@ -11,7 +13,7 @@ async function getDolarPriceFromApi() {
   };
 }
 
-export async function getConversion(): Promise<DolarConvertion> {
+export async function getConversion(): Promise<DolarConvertionProps> {
   const { bid, ask } = await getDolarPriceFromApi();
   return {
     updatedOn: Date.now(),
@@ -24,16 +26,11 @@ export default async function updateDolarConvertionIfOutdated(): Promise<void> {
   try {
     const storageData = await getStorageData();
 
-    if (
-      Object.prototype.hasOwnProperty.call(storageData, 'dolarConvertion') &&
-      new Date().getDate() ==
-        new Date(storageData.dolarConvertion.updatedOn).getDate()
-    ) {
+    if (!storageData.IsDolarConvertionOutdated(new Date())) {
       return;
     }
 
-    const updatedConvertion = await getConversion();
-    storageData.dolarConvertion = updatedConvertion;
+    storageData.updateDolarConvertion(await getConversion());
 
     return setStorageData(storageData);
   } catch (e) {

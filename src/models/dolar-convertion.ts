@@ -14,4 +14,12 @@ export class DolarConvertion implements DolarConvertionProps {
   public static fromJson(json: DolarConvertionProps): DolarConvertion {
     return new DolarConvertion(json.updatedOn, json.bid, json.ask);
   }
+
+  public convertToUsd(pesos: number): number {
+    return pesos / this.ask;
+  }
+
+  public convertToArs(usd: number): number {
+    return usd / this.bid;
+  }
 }

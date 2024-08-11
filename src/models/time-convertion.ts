@@ -15,7 +15,7 @@ const PLURAL_LABELS: string[] = [
   'Minutos',
 ];
 
-export class PriceConvertion {
+export class TimeConvertion {
   constructor(
     private years: number,
     private months: number,
@@ -57,7 +57,7 @@ export class PriceConvertion {
       this.hours,
       this.minutes,
     ];
-    let stringRepresentationChunks = [];
+    const stringRepresentationChunks = [];
     for (let i = 0; i < timeValues.length; i++) {
       if (timeValues[i] == 0) continue;
 
