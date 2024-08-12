@@ -21,7 +21,7 @@ export class StorageData implements StorageDataProps {
   }
 
   public IsDolarConvertionOutdated(now: Date) {
-    return now.getDate() != new Date(this.dolarConvertion.updatedOn).getDate();
+    return this.dolarConvertion.IsOutdated(now);
   }
 
   public updateSalary(salary: number, currency: Currency) {

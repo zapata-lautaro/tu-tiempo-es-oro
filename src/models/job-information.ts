@@ -67,21 +67,21 @@ export class JobInformation implements JobInformationProps {
     return this.hourlySalary(currency) / 60;
   }
 
-  public getConvertion(price: number, currency: Currency): TimeConvertion {
+  public getTimeConvertion(price: number, currency: Currency): TimeConvertion {
     const years = Math.floor(price / this.anualSalary(currency));
     let remainingPrice = price % this.anualSalary(currency);
 
     const months = Math.floor(remainingPrice / this.monthlySalary(currency));
-    remainingPrice -= remainingPrice % this.monthlySalary(currency);
+    remainingPrice = remainingPrice % this.monthlySalary(currency);
 
     const weeks = Math.floor(remainingPrice / this.weeklySalary(currency));
-    remainingPrice -= remainingPrice % this.weeklySalary(currency);
+    remainingPrice = remainingPrice % this.weeklySalary(currency);
 
     const days = Math.floor(remainingPrice / this.dailySalary(currency));
-    remainingPrice -= remainingPrice % this.dailySalary(currency);
+    remainingPrice = remainingPrice % this.dailySalary(currency);
 
     const hours = Math.floor(remainingPrice / this.hourlySalary(currency));
-    remainingPrice -= remainingPrice % this.hourlySalary(currency);
+    remainingPrice = remainingPrice % this.hourlySalary(currency);
 
     const minutes = Math.ceil(remainingPrice / this.perMinuteSalary(currency));
 

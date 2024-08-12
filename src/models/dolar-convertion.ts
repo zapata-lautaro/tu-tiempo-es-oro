@@ -15,6 +15,10 @@ export class DolarConvertion implements DolarConvertionProps {
     return new DolarConvertion(json.updatedOn, json.bid, json.ask);
   }
 
+  public IsOutdated(now: Date) {
+    return now.getDate() != new Date(this.updatedOn).getDate();
+  }
+
   public convertToUsd(pesos: number): number {
     return pesos / this.ask;
   }

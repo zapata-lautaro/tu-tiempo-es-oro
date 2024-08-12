@@ -36,7 +36,7 @@ export class MeliPriceConverter implements PriceConverter {
 
     prices.forEach((priceElement) => {
       const price = +priceElement!.textContent!.replace('.', '');
-      const priceConvertion = this._jobInformation.getConvertion(
+      const priceConvertion = this._jobInformation.getTimeConvertion(
         price,
         CURRENCY,
       );
