@@ -24,6 +24,6 @@ export class DolarConvertion implements DolarConvertionProps {
   }
 
   public convertToArs(usd: number): number {
-    return usd / this.bid;
+    return usd * this.bid;
   }
 }

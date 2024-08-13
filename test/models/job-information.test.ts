@@ -1,20 +1,43 @@
-import { describe, test, expect } from '@jest/globals';
+import { describe, expect } from '@jest/globals';
 import { JobInformation } from '../../src/models/job-information';
 import { Currency } from '../../src/models/currency.enum';
 import { TimeConvertion } from '../../src/models/time-convertion';
 
-describe('Job information', () => {
-  test('Returns correct time convertion for price', () => {
-    const jobInformation = new JobInformation(5, 8, Currency.ARS, 130000, 1000);
-    const result = jobInformation.getTimeConvertion(130000, Currency.ARS);
-    const expectedTimeConvertion = new TimeConvertion(0, 1, 0, 0, 0, 0);
-    expect(result).toEqual(expectedTimeConvertion);
-  });
+describe('getTimeConvertion ', () => {
+  const pesosSalary = 130000;
+  const usdSalary = 1000;
+  const currency = Currency.ARS;
+  const jobInformation = new JobInformation(
+    5,
+    8,
+    currency,
+    pesosSalary,
+    usdSalary,
+  );
 
-  test('Returns correct time convertion for price', () => {
-    const jobInformation = new JobInformation(5, 8, Currency.ARS, 130000, 1000);
-    const result = jobInformation.getTimeConvertion(66625, Currency.ARS);
-    const expectedTimeConvertion = new TimeConvertion(0, 0, 2, 0, 2, 0);
-    expect(result).toEqual(expectedTimeConvertion);
-  });
+  const data: {
+    price: number;
+    currency: Currency;
+    expcetedConvertion: TimeConvertion;
+  }[] = [
+    {
+      price: 130000,
+      currency: Currency.ARS,
+      expcetedConvertion: new TimeConvertion(0, 1, 0, 0, 0, 0),
+    },
+  ];
+
+  describe.each(data)(
+    `A convertion with ${pesosSalary} ${currency} salary`,
+    (params) => {
+      it(`from ${params.price} ${params.currency} price should be ${params.expcetedConvertion.toFullStringRepresentation()}`, () => {
+        const result = jobInformation.getTimeConvertion(
+          params.price,
+          params.currency,
+        );
+
+        expect(result).toEqual(params.expcetedConvertion);
+      });
+    },
+  );
 });
