@@ -12,6 +12,8 @@ const hoursPerDayInput = document.getElementById(
 const daysPerWeekInput = document.getElementById(
   'daysPerWeek',
 )! as HTMLInputElement;
+const dolarBidSpan = document.getElementById('dolarBid')! as HTMLSpanElement;
+const dolarAskSpan = document.getElementById('dolarAsk')! as HTMLSpanElement;
 
 salaryInput.oninput = currencySelect.onchange = debounce(handleSalaryChange);
 hoursPerDayInput.oninput = daysPerWeekInput.onchange = debounce(
@@ -29,6 +31,8 @@ async function setFormValuesFromStorage() {
     storageData.jobInformation.hoursPerLaboralDay.toString();
   daysPerWeekInput.value =
     storageData.jobInformation.laboralDaysPerWeek.toString();
+  dolarAskSpan.textContent = storageData.dolarConvertion.ask.toString();
+  dolarBidSpan.textContent = storageData.dolarConvertion.bid.toString();
 }
 
 async function handleSalaryChange() {
