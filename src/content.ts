@@ -6,6 +6,8 @@ import { MeliPriceConverter } from './application/converters/meli-price-converte
 getStorageData().then((storageData) => {
   const observer = new MutationObserver(
     debounce(() => {
+      if (storageData.jobInformation.salaryInOriginalCurrency() == 0) return;
+
       replacePricesByTime(storageData.jobInformation);
     }, 500),
   );

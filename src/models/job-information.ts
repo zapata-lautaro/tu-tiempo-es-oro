@@ -10,6 +10,10 @@ export interface JobInformationProps {
 }
 
 export class JobInformation implements JobInformationProps {
+  static readonly LABORAL_WEEKS = 4;
+  static readonly LABORAL_MONTHS = 12;
+  static readonly MINUTES_PER_HOUR = 60;
+
   constructor(
     public laboralDaysPerWeek: number,
     public hoursPerLaboralDay: number,
@@ -29,7 +33,11 @@ export class JobInformation implements JobInformationProps {
   }
 
   get hoursPerMonth(): number {
-    return this.hoursPerLaboralDay * this.laboralDaysPerWeek * 4;
+    return (
+      this.hoursPerLaboralDay *
+      this.laboralDaysPerWeek *
+      JobInformation.LABORAL_WEEKS
+    );
   }
 
   public salaryInOriginalCurrency(): number {
@@ -41,7 +49,7 @@ export class JobInformation implements JobInformationProps {
   }
 
   private anualSalary(currency: Currency): number {
-    return this.salaryInCurrency(currency) * 12;
+    return this.salaryInCurrency(currency) * JobInformation.LABORAL_MONTHS;
   }
 
   private monthlySalary(currency: Currency): number {
@@ -49,7 +57,7 @@ export class JobInformation implements JobInformationProps {
   }
 
   private weeklySalary(currency: Currency): number {
-    return this.salaryInCurrency(currency) / 4;
+    return this.salaryInCurrency(currency) / JobInformation.LABORAL_WEEKS;
   }
 
   private dailySalary(currency: Currency): number {
@@ -64,7 +72,7 @@ export class JobInformation implements JobInformationProps {
   }
 
   private perMinuteSalary(currency: Currency): number {
-    return this.hourlySalary(currency) / 60;
+    return this.hourlySalary(currency) / JobInformation.MINUTES_PER_HOUR;
   }
 
   public getTimeConvertion(price: number, currency: Currency): TimeConvertion {

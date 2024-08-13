@@ -25,6 +25,11 @@ describe('getTimeConvertion ', () => {
       currency: Currency.ARS,
       expcetedConvertion: new TimeConvertion(0, 1, 0, 0, 0, 0),
     },
+    {
+      price: 13123,
+      currency: Currency.ARS,
+      expcetedConvertion: new TimeConvertion(0, 0, 0, 2, 0, 10),
+    },
   ];
 
   describe.each(data)(
