@@ -6,8 +6,17 @@ const salaryInput = document.getElementById('salary')! as HTMLInputElement;
 const currencySelect = document.getElementById(
   'currency',
 )! as HTMLSelectElement;
+const hoursPerDayInput = document.getElementById(
+  'hoursPerDay',
+)! as HTMLInputElement;
+const daysPerWeekInput = document.getElementById(
+  'daysPerWeek',
+)! as HTMLInputElement;
 
 salaryInput.oninput = currencySelect.onchange = debounce(handleSalaryChange);
+hoursPerDayInput.oninput = daysPerWeekInput.onchange = debounce(
+  handleLaboralDaysChange,
+);
 document.body.onload = setFormValuesFromStorage;
 
 async function setFormValuesFromStorage() {
@@ -16,6 +25,10 @@ async function setFormValuesFromStorage() {
     .salaryInOriginalCurrency()
     .toString();
   currencySelect.value = storageData.jobInformation.currency;
+  hoursPerDayInput.value =
+    storageData.jobInformation.hoursPerLaboralDay.toString();
+  daysPerWeekInput.value =
+    storageData.jobInformation.laboralDaysPerWeek.toString();
 }
 
 async function handleSalaryChange() {
@@ -26,6 +39,21 @@ async function handleSalaryChange() {
     const storageData = await getStorageData();
 
     storageData.updateSalary(salary, currency as Currency);
+
+    setStorageData(storageData);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function handleLaboralDaysChange() {
+  const hoursPerDay = +hoursPerDayInput.value;
+  const daysPerWeek = +daysPerWeekInput.value;
+
+  try {
+    const storageData = await getStorageData();
+
+    storageData.updateLaboralDaysInformation(hoursPerDay, daysPerWeek);
 
     setStorageData(storageData);
   } catch (e) {

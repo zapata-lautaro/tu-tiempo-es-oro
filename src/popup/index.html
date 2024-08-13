@@ -1,24 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="popup.css">
-</head>
-<body>
-  
-  <h1>Tu tiempo es &#129689;</h1>
-  
-  <label for="salary">Tu sueldo mensual:</label><br/>
-  <div class="salary">
-    <input type="number" id="salary"/>
-    <select id="currency">
-      <option value="ARS">ARS</option>
-      <option value="USD">USD</option>
-    </select>
-  </div>
-  
-  <script type="module" src="../popup.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <h1>Tu tiempo es &#129689;</h1>
+
+    <label for="salary">Tu sueldo mensual:</label><br />
+    <div class="salary">
+      <input type="number" id="salary" />
+      <select id="currency">
+        <option value="ARS">ARS</option>
+        <option value="USD">USD</option>
+      </select>
+    </div>
+
+    <label for="hoursPerDay">Horas de trabajo por día:</label><br />
+    <div class="hoursPerDay">
+      <input type="number" id="hoursPerDay" />
+    </div>
+
+    <label for="daysPerWeek">Días de trabajo por semana:</label><br />
+    <div class="daysPerWeek">
+      <input type="number" id="daysPerWeek" />
+    </div>
+
+    <script type="module" src="../popup.js"></script>
+  </body>
 </html>

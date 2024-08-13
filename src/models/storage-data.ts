@@ -34,6 +34,15 @@ export class StorageData implements StorageDataProps {
         ? salary
         : this.dolarConvertion.convertToArs(salary);
   }
+
+  public updateLaboralDaysInformation(
+    hoursPerDay: number,
+    daysPerWeek: number,
+  ) {
+    this.jobInformation.hoursPerLaboralDay = hoursPerDay;
+    this.jobInformation.laboralDaysPerWeek = daysPerWeek;
+  }
+
   public updateDolarConvertion(dolarConvertionProps: DolarConvertionProps) {
     this.dolarConvertion.ask = dolarConvertionProps.ask;
     this.dolarConvertion.bid = dolarConvertionProps.bid;
