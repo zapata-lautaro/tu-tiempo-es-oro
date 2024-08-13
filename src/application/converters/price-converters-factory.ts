@@ -2,7 +2,7 @@ import { JobInformation } from '../../models/job-information';
 import { MeliPriceConverter } from './meli-price-converter';
 import { PriceConverter } from './price-converter.interface';
 
-const MELI_DOMAIN_REGEX = /^https:\/\/[^.]+\.mercadolibre\.com\.ar\/.*/;
+const MELI_DOMAIN_REGEX = /^https:\/\/([^.]+\.)?mercadolibre\.com\.ar(\/.*)?/;
 
 type ConverterFactory = (
   document: Document,

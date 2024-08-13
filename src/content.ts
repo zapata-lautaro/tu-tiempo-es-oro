@@ -24,7 +24,7 @@ function observeBodyChangesAndReplacePrices(storageData: StorageData) {
 function replacePricesByTime(jobInformation: JobInformation) {
   console.log('replacing prices...');
 
-  const domain = window.location.hostname;
+  const domain = window.location.toString();
   const converter = getConverterForDomain(domain, document, jobInformation);
 
   if (converter) {
