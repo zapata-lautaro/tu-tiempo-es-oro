@@ -5,7 +5,6 @@ import { PriceConverter } from './price-converter.interface';
 const PRICE_VALUE_SELECTOR = '.andes-money-amount__fraction';
 const PRICE_SYMBOL_SELECTOR = '.andes-money-amount__currency-symbol';
 const TIME_SYMBOL = `⏱️`;
-const CURRENCY = Currency.ARS;
 
 export class MeliPriceConverter implements PriceConverter {
   constructor(
@@ -34,11 +33,11 @@ export class MeliPriceConverter implements PriceConverter {
 
     if (!prices) return;
 
-    prices.forEach((priceElement) => {
-      const price = +priceElement!.textContent!.replace('.', '');
+    prices.forEach((priceElement: Element) => {
+      const price = +priceElement!.textContent!.replace(/\./g, '');
       const priceConvertion = this._jobInformation.getTimeConvertion(
         price,
-        CURRENCY,
+        this.getElementCurrency(priceElement),
       );
 
       const timeConvertionElement = priceElement.cloneNode() as Element;
@@ -48,6 +47,13 @@ export class MeliPriceConverter implements PriceConverter {
       priceElement.insertAdjacentElement('beforebegin', timeConvertionElement);
       priceElement.classList.add('converted');
     });
+  }
+
+  private getElementCurrency(element: Element): Currency {
+    const isPriceInDolars =
+      element.parentElement?.ariaLabel?.includes('dólares');
+
+    return isPriceInDolars ? Currency.USD : Currency.ARS;
   }
 
   private replaceSymbols(): void {
