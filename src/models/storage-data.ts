@@ -33,6 +33,7 @@ export class StorageData implements StorageDataProps {
       currency == Currency.ARS
         ? salary
         : this.dolarConvertion.convertToArs(salary);
+    this.jobInformation.currency = currency;
   }
 
   public updateLaboralDaysInformation(
