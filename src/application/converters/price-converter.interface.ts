@@ -1,6 +1,4 @@
-import { JobInformation } from '../../models/job-information';
-
 export interface PriceConverter {
-  convert(jobInformation: JobInformation): void;
+  convert(): void;
   revert(): void;
 }

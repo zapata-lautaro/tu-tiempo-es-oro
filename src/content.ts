@@ -1,9 +1,12 @@
 import { debounce } from './application/utils';
 import { getStorageData } from './application/storage-service';
 import { JobInformation } from './models/job-information';
-import { MeliPriceConverter } from './application/converters/meli-price-converter';
+import { StorageData } from './models/storage-data';
+import { getConverterForDomain } from './application/converters/price-converters-factory';
 
-getStorageData().then((storageData) => {
+getStorageData().then(observeBodyChangesAndReplacePrices);
+
+function observeBodyChangesAndReplacePrices(storageData: StorageData) {
   const observer = new MutationObserver(
     debounce(() => {
       if (storageData.jobInformation.salaryInOriginalCurrency() == 0) return;
@@ -16,12 +19,17 @@ getStorageData().then((storageData) => {
     childList: true,
     subtree: true,
   });
-});
+}
 
 function replacePricesByTime(jobInformation: JobInformation) {
   console.log('replacing prices...');
 
-  const meliPriceConverter = new MeliPriceConverter(document, jobInformation);
+  const domain = window.location.hostname;
+  const converter = getConverterForDomain(domain, document, jobInformation);
 
-  meliPriceConverter.convert();
+  if (converter) {
+    converter.convert();
+  } else {
+    console.warn(`No converter found for domain: ${domain}`);
+  }
 }
