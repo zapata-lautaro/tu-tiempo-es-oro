@@ -4,7 +4,11 @@ import { PriceConverter } from './price-converter.interface';
 
 const PRICE_VALUE_SELECTOR = '.andes-money-amount__fraction';
 const PRICE_SYMBOL_SELECTOR = '.andes-money-amount__currency-symbol';
+const CENTS_SELECTOR = '.andes-money-amount__cents';
 const TIME_SYMBOL = `⏱️`;
+const CONVERTED_ELEMENT_CLASS = 'time-convertion';
+const ORIGINAL_ELEMENT_CLASS = 'original';
+const USD_KEYWORD = 'dólares';
 
 export class MeliPriceConverter implements PriceConverter {
   constructor(
@@ -16,19 +20,31 @@ export class MeliPriceConverter implements PriceConverter {
     this.replacePrices();
     this.replaceSymbols();
 
-    const cents = this._document.querySelectorAll('.andes-money-amount__cents');
+    const cents = this._document.querySelectorAll(CENTS_SELECTOR);
     cents.forEach((centElement) => {
-      (centElement as HTMLElement).style.display = 'none';
+      (centElement as HTMLElement).classList.add(ORIGINAL_ELEMENT_CLASS);
     });
   }
 
   revert(): void {
-    throw new Error('Method not implemented.');
+    const convertedElements = this._document.querySelectorAll(
+      `.${CONVERTED_ELEMENT_CLASS}`,
+    );
+    convertedElements.forEach((convertedElement) => {
+      convertedElement.remove();
+    });
+
+    const originalElements = this._document.querySelectorAll(
+      `.${ORIGINAL_ELEMENT_CLASS}`,
+    );
+    originalElements.forEach((originalElement) => {
+      originalElement.classList.remove(ORIGINAL_ELEMENT_CLASS);
+    });
   }
 
   private replacePrices(): void {
     const prices = this._document.querySelectorAll(
-      `${PRICE_VALUE_SELECTOR}:not(.time-convertion, .converted)`,
+      `${PRICE_VALUE_SELECTOR}:not(.${ORIGINAL_ELEMENT_CLASS}, .${CONVERTED_ELEMENT_CLASS})`,
     );
 
     if (!prices) return;
@@ -40,18 +56,19 @@ export class MeliPriceConverter implements PriceConverter {
         this.getElementCurrency(priceElement),
       );
 
-      const timeConvertionElement = priceElement.cloneNode() as Element;
-      timeConvertionElement.classList.add('time-convertion');
-      timeConvertionElement.textContent = `${priceConvertion.toShortStringRepresentation()}`;
-
-      priceElement.insertAdjacentElement('beforebegin', timeConvertionElement);
-      priceElement.classList.add('converted');
+      this.convertElement(
+        priceElement,
+        priceConvertion.toShortStringRepresentation(),
+        ORIGINAL_ELEMENT_CLASS,
+        CONVERTED_ELEMENT_CLASS,
+      );
     });
   }
 
   private getElementCurrency(element: Element): Currency {
-    const isPriceInDolars =
-      element.parentElement?.ariaLabel?.includes('dólares');
+    const isPriceInDolars = element.parentElement
+      ?.getAttribute('aria-label')
+      .includes(USD_KEYWORD);
 
     return isPriceInDolars ? Currency.USD : Currency.ARS;
   }
@@ -61,7 +78,27 @@ export class MeliPriceConverter implements PriceConverter {
       PRICE_SYMBOL_SELECTOR,
     );
     currencySimbols.forEach((symbolElement) => {
-      symbolElement.replaceWith(TIME_SYMBOL);
+      this.convertElement(
+        symbolElement,
+        TIME_SYMBOL,
+        ORIGINAL_ELEMENT_CLASS,
+        CONVERTED_ELEMENT_CLASS,
+      );
     });
+  }
+
+  private convertElement(
+    element: Element,
+    content: string,
+    oldElementClass: string,
+    convertedElementClass: string,
+  ) {
+    const convertedElement = element.cloneNode() as Element;
+    element.classList.add(oldElementClass);
+
+    convertedElement.classList.add(convertedElementClass);
+    convertedElement.textContent = content;
+
+    element.insertAdjacentElement('beforebegin', convertedElement);
   }
 }

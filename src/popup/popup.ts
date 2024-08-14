@@ -44,7 +44,7 @@ async function handleSalaryChange() {
 
     storageData.updateSalary(salary, currency as Currency);
 
-    setStorageData(storageData);
+    await setStorageData(storageData);
   } catch (e) {
     console.log(e);
   }
@@ -59,7 +59,7 @@ async function handleLaboralDaysChange() {
 
     storageData.updateLaboralDaysInformation(hoursPerDay, daysPerWeek);
 
-    setStorageData(storageData);
+    await setStorageData(storageData);
   } catch (e) {
     console.log(e);
   }

@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convert should replace prices and currency simbols 1`] = `
+"
+    <span class="andes-money-amount" aria-label="1000000 pesos">
+        <span class="andes-money-amount__currency-symbol time-convertion">⏱️</span><span class="andes-money-amount__currency-symbol original">$</span>
+        <span class="andes-money-amount__fraction time-convertion">10 Meses</span><span class="andes-money-amount__fraction original">1.000.000</span>
+        <span class="andes-money-amount__cents original">44</span>
+    </span>
+"
+`;
+
+exports[`convert should replace prices in usd and currency simbols 1`] = `
+"
+    <span class="andes-money-amount" aria-label="500 dólares">
+        <span class="andes-money-amount__currency-symbol time-convertion">⏱️</span><span class="andes-money-amount__currency-symbol original">$</span>
+        <span class="andes-money-amount__fraction time-convertion">2 Semanas</span><span class="andes-money-amount__fraction original">500</span>
+        <span class="andes-money-amount__cents original">44</span>
+    </span>
+"
+`;
+
+exports[`revert should remove converted elements and remove classes from original ones 1`] = `
+"
+    <span class="andes-money-amount" aria-label="1000000 pesos">
+        <span class="andes-money-amount__currency-symbol">$</span>
+        <span class="andes-money-amount__fraction">1.000.000</span>
+        <span class="andes-money-amount__cents">44</span>
+    </span>
+"
+`;
