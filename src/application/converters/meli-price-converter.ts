@@ -6,66 +6,70 @@ const PRICE_VALUE_SELECTOR = '.andes-money-amount__fraction';
 const PRICE_SYMBOL_SELECTOR = '.andes-money-amount__currency-symbol';
 const CENTS_SELECTOR = '.andes-money-amount__cents';
 const TIME_SYMBOL = `⏱️`;
-const CONVERTED_ELEMENT_CLASS = 'time-convertion';
-const ORIGINAL_ELEMENT_CLASS = 'original';
+const ORIGINAL_VALUE_ATTRIBUTE = 'data-original-value';
+const HIDE_CLASS = 'time-convertion-hide';
 const USD_KEYWORD = 'dólares';
 
 export class MeliPriceConverter implements PriceConverter {
-  constructor(
-    private _document: Document,
-    private _jobInformation: JobInformation,
-  ) {}
+  constructor(private _document: Document) {}
 
-  convert(): void {
-    this.replacePrices();
-    this.replaceSymbols();
+  async convert(jobInformation: JobInformation): Promise<void> {
+    if (jobInformation.salaryInOriginalCurrency() == 0) {
+      console.warn(`Salary not set`);
+      return;
+    }
 
-    const cents = this._document.querySelectorAll(CENTS_SELECTOR);
-    cents.forEach((centElement) => {
-      (centElement as HTMLElement).classList.add(ORIGINAL_ELEMENT_CLASS);
-    });
+    await this.replacePrices(jobInformation);
+    await this.replaceSymbols();
+    await this.removeCents();
   }
 
-  revert(): void {
+  async revert(): Promise<void> {
+    console.log('reverting');
+    await this.revertConvertedElements();
+    await this.showCents();
+  }
+
+  private async revertConvertedElements() {
     const convertedElements = this._document.querySelectorAll(
-      `.${CONVERTED_ELEMENT_CLASS}`,
+      `[${ORIGINAL_VALUE_ATTRIBUTE}]`,
     );
     convertedElements.forEach((convertedElement) => {
-      convertedElement.remove();
-    });
-
-    const originalElements = this._document.querySelectorAll(
-      `.${ORIGINAL_ELEMENT_CLASS}`,
-    );
-    originalElements.forEach((originalElement) => {
-      originalElement.classList.remove(ORIGINAL_ELEMENT_CLASS);
+      const originalValue = convertedElement.getAttribute(
+        ORIGINAL_VALUE_ATTRIBUTE,
+      );
+      convertedElement.removeAttribute(ORIGINAL_VALUE_ATTRIBUTE);
+      convertedElement.textContent = originalValue;
     });
   }
 
-  private replacePrices(): void {
+  private async replacePrices(jobInformation: JobInformation): Promise<void> {
     const prices = this._document.querySelectorAll(
-      `${PRICE_VALUE_SELECTOR}:not(.${ORIGINAL_ELEMENT_CLASS}, .${CONVERTED_ELEMENT_CLASS})`,
+      `${PRICE_VALUE_SELECTOR}:not([${ORIGINAL_VALUE_ATTRIBUTE}])`,
     );
+    console.log(`replace prices processing: ${prices.length} prices`);
 
     if (!prices) return;
 
-    prices.forEach((priceElement: Element) => {
-      const price = +priceElement!.textContent!.replace(/\./g, '');
-      const priceConvertion = this._jobInformation.getTimeConvertion(
-        price,
-        this.getElementCurrency(priceElement),
-      );
+    await Promise.all(
+      Array.from(prices, async (priceElement) => {
+        const originalValue = priceElement!.textContent;
+        const price = +originalValue!.replace(/\./g, '');
+        const priceConvertion = jobInformation.getTimeConvertion(
+          price,
+          await this.getElementCurrency(priceElement),
+        );
 
-      this.convertElement(
-        priceElement,
-        priceConvertion.toShortStringRepresentation(),
-        ORIGINAL_ELEMENT_CLASS,
-        CONVERTED_ELEMENT_CLASS,
-      );
-    });
+        return this.convertElement(
+          priceElement,
+          originalValue,
+          priceConvertion.toShortStringRepresentation(),
+        );
+      }),
+    );
   }
 
-  private getElementCurrency(element: Element): Currency {
+  private async getElementCurrency(element: Element): Promise<Currency> {
     const isPriceInDolars = element.parentElement
       ?.getAttribute('aria-label')
       .includes(USD_KEYWORD);
@@ -73,32 +77,43 @@ export class MeliPriceConverter implements PriceConverter {
     return isPriceInDolars ? Currency.USD : Currency.ARS;
   }
 
-  private replaceSymbols(): void {
+  private async replaceSymbols(): Promise<void> {
     const currencySimbols = this._document.querySelectorAll(
       PRICE_SYMBOL_SELECTOR,
     );
-    currencySimbols.forEach((symbolElement) => {
-      this.convertElement(
-        symbolElement,
-        TIME_SYMBOL,
-        ORIGINAL_ELEMENT_CLASS,
-        CONVERTED_ELEMENT_CLASS,
-      );
+    await Promise.all(
+      Array.from(currencySimbols, (symbolElement) =>
+        this.convertElement(
+          symbolElement,
+          symbolElement.textContent,
+          TIME_SYMBOL,
+        ),
+      ),
+    );
+  }
+
+  private async removeCents() {
+    const cents = this._document.querySelectorAll(
+      `${CENTS_SELECTOR}:not(.${HIDE_CLASS})`,
+    );
+    cents.forEach((cent) => {
+      cent.classList.add(HIDE_CLASS);
     });
   }
 
-  private convertElement(
+  private async showCents() {
+    const cents = this._document.querySelectorAll(CENTS_SELECTOR);
+    cents.forEach((cent) => {
+      cent.classList.remove(HIDE_CLASS);
+    });
+  }
+
+  private async convertElement(
     element: Element,
-    content: string,
-    oldElementClass: string,
-    convertedElementClass: string,
+    originalContent: string,
+    newContent: string,
   ) {
-    const convertedElement = element.cloneNode() as Element;
-    element.classList.add(oldElementClass);
-
-    convertedElement.classList.add(convertedElementClass);
-    convertedElement.textContent = content;
-
-    element.insertAdjacentElement('beforebegin', convertedElement);
+    element.setAttribute(ORIGINAL_VALUE_ATTRIBUTE, originalContent);
+    element.textContent = newContent;
   }
 }

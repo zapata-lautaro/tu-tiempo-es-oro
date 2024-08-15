@@ -1,4 +1,6 @@
+import { JobInformation } from '../../models/job-information';
+
 export interface PriceConverter {
-  convert(): void;
-  revert(): void;
+  convert(jobInformation: JobInformation): Promise<void>;
+  revert(): Promise<void>;
 }

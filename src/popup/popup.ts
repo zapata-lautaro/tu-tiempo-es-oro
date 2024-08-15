@@ -1,6 +1,7 @@
 import { getStorageData, setStorageData } from '../application/storage-service';
 import { debounce } from '../application/utils';
 import { Currency } from '../models/currency.enum';
+import { StorageData } from '../models/storage-data';
 
 const salaryInput = document.getElementById('salary')! as HTMLInputElement;
 const currencySelect = document.getElementById(
@@ -45,6 +46,7 @@ async function handleSalaryChange() {
     storageData.updateSalary(salary, currency as Currency);
 
     await setStorageData(storageData);
+    await notifyPopupChange(storageData);
   } catch (e) {
     console.log(e);
   }
@@ -60,7 +62,17 @@ async function handleLaboralDaysChange() {
     storageData.updateLaboralDaysInformation(hoursPerDay, daysPerWeek);
 
     await setStorageData(storageData);
+    await notifyPopupChange(storageData);
   } catch (e) {
     console.log(e);
   }
+}
+
+async function notifyPopupChange(storageData: StorageData) {
+  console.log('notifyPopupChange');
+  const [tab] = await chrome.tabs.query({
+    active: true,
+    lastFocusedWindow: true,
+  });
+  await chrome.tabs.sendMessage(tab.id, { storageData });
 }

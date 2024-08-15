@@ -1,6 +1,5 @@
 import { MeliPriceConverter } from '../../../src/application/converters/meli-price-converter';
 import { getConverterForDomain } from '../../../src/application/converters/price-converters-factory';
-import { JobInformation } from '../../../src/models/job-information';
 
 describe('getConverterForDomain ', () => {
   const validDomains: {
@@ -23,11 +22,7 @@ describe('getConverterForDomain ', () => {
 
   describe.each(validDomains)('A convertion', (params) => {
     it(`with domain ${params.domain} should return ${params.expcetedConverter}`, () => {
-      const result = getConverterForDomain(
-        params.domain,
-        {} as Document,
-        {} as JobInformation,
-      );
+      const result = getConverterForDomain(params.domain, {} as Document);
       const resultClassName = result.constructor.name;
 
       expect(resultClassName).toEqual(params.expcetedConverter);
@@ -41,11 +36,7 @@ describe('getConverterForDomain ', () => {
 
   describe.each(invalidDomains)('A convertion', (domain) => {
     it(`with domain ${domain} should return null`, () => {
-      const result = getConverterForDomain(
-        domain,
-        {} as Document,
-        {} as JobInformation,
-      );
+      const result = getConverterForDomain(domain, {} as Document);
 
       expect(result).toBeNull();
     });
