@@ -15,9 +15,15 @@ h1 {
   display: flex;
 }
 
+.dolar-convertion {
+  margin-top: 1rem;
+  color: grey;
+}
+
 .toggle {
   cursor: pointer;
   display: inline-block;
+  margin-bottom: 1rem;
 }
 .toggle-switch {
   display: inline-block;

@@ -25,13 +25,18 @@ const daysPerWeekInput = document.getElementById(
 )! as HTMLInputElement;
 const dolarBidSpan = document.getElementById('dolarBid')! as HTMLSpanElement;
 const dolarAskSpan = document.getElementById('dolarAsk')! as HTMLSpanElement;
-const activeCheckbox = document.getElementById('active')! as HTMLInputElement;
+const domainEnableCheckbox = document.getElementById(
+  'active',
+)! as HTMLInputElement;
+const domainEnableCheckboxLabel = document.getElementById(
+  'toggle-label',
+)! as HTMLInputElement;
 
 salaryInput.oninput = currencySelect.onchange = debounce(handleSalaryChange);
 hoursPerDayInput.oninput = daysPerWeekInput.onchange = debounce(
   handleLaboralDaysChange,
 );
-activeCheckbox.oninput = debounce(handleEnableSwitchChange);
+domainEnableCheckbox.oninput = debounce(handleEnableSwitchChange);
 document.body.onload = async () => {
   await setStorageDataValues();
   await setCurrentDomainConfiguration();
@@ -56,11 +61,13 @@ async function setCurrentDomainConfiguration() {
   const currentDomainKey = getKeyForDomain(domain);
   if (!currentDomainKey) {
     console.warn('Domain not supported');
+    domainEnableCheckbox.disabled = true;
+    domainEnableCheckboxLabel.textContent = 'Pagina no soportada';
     return;
   }
 
   domainConfiguration = await getDomainConfiguration(currentDomainKey);
-  activeCheckbox.checked = domainConfiguration.convertionEnabled;
+  domainEnableCheckbox.checked = domainConfiguration.convertionEnabled;
 }
 
 async function getCurrentDomain(): Promise<string> {
@@ -100,7 +107,7 @@ async function handleLaboralDaysChange() {
 
 async function handleEnableSwitchChange() {
   try {
-    domainConfiguration.enable(activeCheckbox.checked);
+    domainConfiguration.enable(domainEnableCheckbox.checked);
 
     await setDomainConfiguration(domainConfiguration);
   } catch (e) {
