@@ -76,16 +76,13 @@ export class MeliPriceConverter implements PriceConverter {
 
   private async replaceSymbols(): Promise<void> {
     const currencySimbols = this._document.querySelectorAll(
-      PRICE_SYMBOL_SELECTOR,
+      `${PRICE_SYMBOL_SELECTOR}:not([${ORIGINAL_VALUE_ATTRIBUTE}])`,
     );
     await Promise.all(
-      Array.from(currencySimbols, (symbolElement) =>
-        this.convertElement(
-          symbolElement,
-          symbolElement.textContent,
-          TIME_SYMBOL,
-        ),
-      ),
+      Array.from(currencySimbols, (symbolElement) => {
+        const originalValue = symbolElement.textContent;
+        this.convertElement(symbolElement, originalValue, TIME_SYMBOL);
+      }),
     );
   }
 
