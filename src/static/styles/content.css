@@ -1,3 +1,31 @@
 .time-convertion-hide {
   display: none !important;
 }
+
+tool-tip {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  border-radius: 8px;
+
+  top: 100%;
+  left: 12.5%;
+
+  opacity: 0;
+  transition: opacity 0.3 ease;
+}
+
+:has(> tool-tip) {
+  position: relative;
+  z-index: 1;
+}
+
+:has(> tool-tip):hover tool-tip {
+  opacity: 1;
+}
