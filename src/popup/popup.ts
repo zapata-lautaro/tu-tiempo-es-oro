@@ -60,7 +60,6 @@ async function setCurrentDomainConfiguration() {
   }
 
   domainConfiguration = await getDomainConfiguration(currentDomainKey);
-  console.log(domainConfiguration);
   activeCheckbox.checked = domainConfiguration.convertionEnabled;
 }
 
@@ -81,7 +80,6 @@ async function handleSalaryChange() {
     storageData.updateSalary(salary, currency as Currency);
 
     await setStorageData(storageData);
-    await notifyPopupChange(storageData);
   } catch (e) {
     console.log(e);
   }
@@ -95,7 +93,6 @@ async function handleLaboralDaysChange() {
     storageData.updateLaboralDaysInformation(hoursPerDay, daysPerWeek);
 
     await setStorageData(storageData);
-    await notifyPopupChange(storageData);
   } catch (e) {
     console.log(e);
   }
@@ -106,26 +103,7 @@ async function handleEnableSwitchChange() {
     domainConfiguration.enable(activeCheckbox.checked);
 
     await setDomainConfiguration(domainConfiguration);
-    await notifyDomainConfigurationChange();
   } catch (e) {
     console.log(e);
   }
-}
-
-async function notifyPopupChange(storageData: StorageData) {
-  const [tab] = await chrome.tabs.query({
-    active: true,
-    lastFocusedWindow: true,
-  });
-  await chrome.tabs.sendMessage(tab.id, { storageData });
-}
-
-async function notifyDomainConfigurationChange() {
-  const [tab] = await chrome.tabs.query({
-    active: true,
-    lastFocusedWindow: true,
-  });
-  await chrome.tabs.sendMessage(tab.id, {
-    activeSwitchChange: { newValue: domainConfiguration.convertionEnabled },
-  });
 }

@@ -1,8 +1,8 @@
 import { DomainConfiguration } from '../models/domain-configuration';
 import { StorageData, StorageDataProps } from '../models/storage-data';
 
-const STORAGE_DATA_KEY = 'storageData';
-const DOMAINS_CONFIGURATION = 'domainsConfiguration';
+export const STORAGE_DATA_KEY = 'storageData';
+export const DOMAINS_CONFIGURATION = 'domainsConfiguration';
 
 export async function getStorageData(): Promise<StorageData> {
   const storageDataJson = await getData(STORAGE_DATA_KEY);

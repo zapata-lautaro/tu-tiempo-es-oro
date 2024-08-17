@@ -1,39 +1,53 @@
 import { debounce } from './application/utils';
-import { getStorageData } from './application/storage-service';
+import {
+  DOMAINS_CONFIGURATION,
+  getDomainConfiguration,
+  getStorageData,
+  STORAGE_DATA_KEY,
+} from './application/storage-service';
 import { JobInformation } from './models/job-information';
 import { StorageData } from './models/storage-data';
-import { getConverterForDomain } from './application/converters/price-converters-factory';
+import {
+  getConverterForDomain,
+  getKeyForDomain,
+} from './application/converters/price-converters-factory';
 import { PriceConverter } from './application/converters/price-converter.interface';
+import { DomainConfigurationProps } from './models/domain-configuration';
 
 let observer: MutationObserver;
 let converter: PriceConverter;
+let converterKey: string;
 let lastStorageData: StorageData;
+let lastDomainConfiguration: DomainConfigurationProps;
 
-getConverter();
-getStorageData().then((storageData) => {
-  if (!converter) return;
-
-  lastStorageData = storageData;
-  addListeners();
-  observeBodyChangesAndReplacePrices(storageData.jobInformation);
+initializeContentScript().then(() => {
+  console.log('content script init');
 });
 
-function addListeners() {
-  chrome.runtime.onMessage.addListener(async (request) => {
-    if (request.storageData) {
-      const storageData = StorageData.fromJson(request.storageData);
+function addStorageListener() {
+  chrome.storage.sync.onChanged.addListener(async (changes) => {
+    if (Object.keys(changes).includes(STORAGE_DATA_KEY)) {
+      const storageData = StorageData.fromJson(
+        changes[STORAGE_DATA_KEY].newValue,
+      );
       lastStorageData = storageData;
-      await converter.revert();
-      observeBodyChangesAndReplacePrices(storageData.jobInformation);
+
+      if (lastDomainConfiguration.convertionEnabled) {
+        await converter.revert();
+        observeBodyChangesAndReplacePrices(storageData.jobInformation);
+      }
     }
 
-    if (request.activeSwitchChange && request.activeSwitchChange.newValue) {
-      observeBodyChangesAndReplacePrices(lastStorageData.jobInformation);
-    }
-
-    if (request.activeSwitchChange && !request.activeSwitchChange.newValue) {
-      observer.disconnect();
-      await converter.revert();
+    if (Object.keys(changes).includes(DOMAINS_CONFIGURATION)) {
+      lastDomainConfiguration = changes[DOMAINS_CONFIGURATION].newValue[
+        converterKey
+      ] as DomainConfigurationProps;
+      if (lastDomainConfiguration.convertionEnabled) {
+        observeBodyChangesAndReplacePrices(lastStorageData.jobInformation);
+      } else {
+        observer.disconnect();
+        await converter.revert();
+      }
     }
   });
 }
@@ -59,10 +73,19 @@ async function replacePricesByTime(jobInformation: JobInformation) {
   await converter.convert(jobInformation);
 }
 
-function getConverter() {
+async function initializeContentScript() {
   const domain = window.location.toString();
   converter = getConverterForDomain(domain, document);
+  converterKey = getKeyForDomain(domain);
+
   if (!converter) {
     console.warn(`No converter found for domain: ${domain}`);
+  }
+
+  lastDomainConfiguration = await getDomainConfiguration(converterKey);
+  if (lastDomainConfiguration.convertionEnabled) {
+    lastStorageData = await getStorageData();
+    addStorageListener();
+    observeBodyChangesAndReplacePrices(lastStorageData.jobInformation);
   }
 }
