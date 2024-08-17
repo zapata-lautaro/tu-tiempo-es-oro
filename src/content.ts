@@ -7,25 +7,34 @@ import { PriceConverter } from './application/converters/price-converter.interfa
 
 let observer: MutationObserver;
 let converter: PriceConverter;
+let lastStorageData: StorageData;
 
 getConverter();
 getStorageData().then((storageData) => {
   if (!converter) return;
 
-  addStorageDataListener();
+  lastStorageData = storageData;
+  addListeners();
   observeBodyChangesAndReplacePrices(storageData.jobInformation);
 });
 
-function addStorageDataListener() {
+function addListeners() {
   chrome.runtime.onMessage.addListener(async (request) => {
-    console.log('Update received');
-    if (!request.storageData || !converter) return;
+    if (request.storageData) {
+      const storageData = StorageData.fromJson(request.storageData);
+      lastStorageData = storageData;
+      await converter.revert();
+      observeBodyChangesAndReplacePrices(storageData.jobInformation);
+    }
 
-    const storageData = StorageData.fromJson(request.storageData);
-    console.log('Call revert');
-    await converter.revert();
-    console.log('revert end');
-    observeBodyChangesAndReplacePrices(storageData.jobInformation);
+    if (request.activeSwitchChange && request.activeSwitchChange.newValue) {
+      observeBodyChangesAndReplacePrices(lastStorageData.jobInformation);
+    }
+
+    if (request.activeSwitchChange && !request.activeSwitchChange.newValue) {
+      observer.disconnect();
+      await converter.revert();
+    }
   });
 }
 
@@ -37,9 +46,8 @@ function observeBodyChangesAndReplacePrices(jobInformation: JobInformation) {
   replacePricesByTime(jobInformation);
   observer = new MutationObserver(
     debounce(async () => {
-      console.log('mutation triggered');
       await replacePricesByTime(jobInformation);
-    }, 500),
+    }, 1000),
   );
   observer.observe(document.getElementsByTagName('body')[0], {
     childList: true,
@@ -48,7 +56,6 @@ function observeBodyChangesAndReplacePrices(jobInformation: JobInformation) {
 }
 
 async function replacePricesByTime(jobInformation: JobInformation) {
-  console.log('replacing prices...');
   await converter.convert(jobInformation);
 }
 

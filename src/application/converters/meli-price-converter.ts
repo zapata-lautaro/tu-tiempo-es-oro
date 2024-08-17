@@ -15,7 +15,6 @@ export class MeliPriceConverter implements PriceConverter {
 
   async convert(jobInformation: JobInformation): Promise<void> {
     if (jobInformation.salaryInOriginalCurrency() == 0) {
-      console.warn(`Salary not set`);
       return;
     }
 
@@ -25,7 +24,6 @@ export class MeliPriceConverter implements PriceConverter {
   }
 
   async revert(): Promise<void> {
-    console.log('reverting');
     await this.revertConvertedElements();
     await this.showCents();
   }
@@ -47,7 +45,6 @@ export class MeliPriceConverter implements PriceConverter {
     const prices = this._document.querySelectorAll(
       `${PRICE_VALUE_SELECTOR}:not([${ORIGINAL_VALUE_ATTRIBUTE}])`,
     );
-    console.log(`replace prices processing: ${prices.length} prices`);
 
     if (!prices) return;
 

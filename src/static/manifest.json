@@ -18,5 +18,5 @@
     "service_worker": "background.js",
     "type": "module"
   },
-  "permissions": ["scripting", "storage"]
+  "permissions": ["scripting", "storage", "activeTab"]
 }
