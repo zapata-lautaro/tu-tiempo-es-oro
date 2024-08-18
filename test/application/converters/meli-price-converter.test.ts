@@ -75,18 +75,18 @@ describe('convert', () => {
     );
 
     const meliPriceConverter = new MeliPriceConverter(document);
-    meliPriceConverter.convert(jobInformationWithoutSalary);
+    await meliPriceConverter.convert(jobInformationWithoutSalary);
 
     expect(document.body.innerHTML).toBe(originalMeliPesosHtml);
   });
 });
 
 describe('revert', () => {
-  it('should leave document as orignial without attributes or classes', () => {
+  it('should leave document as orignial without attributes or classes', async () => {
     document.body.innerHTML = convertedMeliHtml;
 
     const meliPriceConverter = new MeliPriceConverter(document);
-    meliPriceConverter.revert();
+    await meliPriceConverter.revert();
 
     expect(document.body.innerHTML).toMatchSnapshot();
   });

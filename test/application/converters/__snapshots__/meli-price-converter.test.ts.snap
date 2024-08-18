@@ -3,8 +3,8 @@
 exports[`convert should replace prices and currency simbols 1`] = `
 "
     <span class="andes-money-amount" aria-label="1000000 pesos">
-        <span class="andes-money-amount__currency-symbol" data-original-value="$">⏱️</span>
-        <span class="andes-money-amount__fraction" data-original-value="1.000.000">10 Meses</span>
+        <span class="andes-money-amount__currency-symbol" data-original-value="$">⏱️<converted></converted></span>
+        <span class="andes-money-amount__fraction" data-original-value="1.000.000">10 Meses<converted></converted></span>
         <span class="andes-money-amount__cents time-convertion-hide">44</span>
     </span>
 "
@@ -13,8 +13,8 @@ exports[`convert should replace prices and currency simbols 1`] = `
 exports[`convert should replace prices in usd and currency simbols 1`] = `
 "
     <span class="andes-money-amount" aria-label="500 dólares">
-        <span class="andes-money-amount__currency-symbol" data-original-value="U$D">⏱️</span>
-        <span class="andes-money-amount__fraction" data-original-value="500">2 Semanas</span>
+        <span class="andes-money-amount__currency-symbol" data-original-value="U$D">⏱️<converted></converted></span>
+        <span class="andes-money-amount__fraction" data-original-value="500">2 Semanas<converted></converted></span>
         <span class="andes-money-amount__cents time-convertion-hide">44</span>
     </span>
 "
@@ -25,7 +25,7 @@ exports[`revert should leave document as orignial without attributes or classes 
     <span class="andes-money-amount" aria-label="500 dólares">
         <span class="andes-money-amount__currency-symbol">U$D</span>
         <span class="andes-money-amount__fraction">500</span>
-        <span class="andes-money-amount__cents time-convertion-hide">44</span>
+        <span class="andes-money-amount__cents">44</span>
     </span>
 "
 `;

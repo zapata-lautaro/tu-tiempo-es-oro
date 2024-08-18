@@ -34,7 +34,7 @@ function addStorageListener() {
 
       if (lastDomainConfiguration.convertionEnabled) {
         await converter.revert();
-        observeBodyChangesAndReplacePrices(storageData.jobInformation);
+        await observeBodyChangesAndReplacePrices();
       }
     }
 
@@ -43,25 +43,28 @@ function addStorageListener() {
         converterKey
       ] as DomainConfigurationProps;
       if (lastDomainConfiguration.convertionEnabled) {
-        observeBodyChangesAndReplacePrices(lastStorageData.jobInformation);
+        await observeBodyChangesAndReplacePrices();
       } else {
-        observer.disconnect();
-        await converter.revert();
+        observer?.disconnect();
+        await converter?.revert();
       }
     }
   });
 }
 
-function observeBodyChangesAndReplacePrices(jobInformation: JobInformation) {
+async function observeBodyChangesAndReplacePrices() {
   if (observer) {
     observer.disconnect();
   }
+  if (!lastStorageData) {
+    lastStorageData = await getStorageData();
+  }
 
-  replacePricesByTime(jobInformation);
+  replacePricesByTime(lastStorageData.jobInformation);
   observer = new MutationObserver(
     debounce(async () => {
-      await replacePricesByTime(jobInformation);
-    }, 1000),
+      await replacePricesByTime(lastStorageData.jobInformation);
+    }),
   );
   observer.observe(document.getElementsByTagName('body')[0], {
     childList: true,
@@ -81,11 +84,10 @@ async function initializeContentScript() {
   if (!converter) {
     console.warn(`No converter found for domain: ${domain}`);
   }
-
+  lastStorageData = await getStorageData();
+  addStorageListener();
   lastDomainConfiguration = await getDomainConfiguration(converterKey);
   if (lastDomainConfiguration.convertionEnabled) {
-    lastStorageData = await getStorageData();
-    addStorageListener();
-    observeBodyChangesAndReplacePrices(lastStorageData.jobInformation);
+    observeBodyChangesAndReplacePrices();
   }
 }

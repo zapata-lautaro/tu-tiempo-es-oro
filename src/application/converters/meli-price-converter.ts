@@ -2,11 +2,15 @@ import { Currency } from '../../models/currency.enum';
 import { JobInformation } from '../../models/job-information';
 import { PriceConverter } from './price-converter.interface';
 
-const PRICE_VALUE_SELECTOR = '.andes-money-amount__fraction';
+const PRICE_VALUE_SELECTORS = [
+  '.andes-money-amount__fraction',
+  '.dynamic-carousel__price span',
+];
 const PRICE_SYMBOL_SELECTOR = '.andes-money-amount__currency-symbol';
 const CENTS_SELECTOR = '.andes-money-amount__cents';
 const TIME_SYMBOL = `⏱️`;
 const ORIGINAL_VALUE_ATTRIBUTE = 'data-original-value';
+const CONVERTED_TAG = 'converted';
 const HIDE_CLASS = 'time-convertion-hide';
 const USD_KEYWORD = 'dólares';
 
@@ -14,7 +18,7 @@ export class MeliPriceConverter implements PriceConverter {
   constructor(private _document: Document) {}
 
   async convert(jobInformation: JobInformation): Promise<void> {
-    if (jobInformation.salaryInOriginalCurrency() == 0) {
+    if (jobInformation.hasMissingData()) {
       return;
     }
 
@@ -42,16 +46,21 @@ export class MeliPriceConverter implements PriceConverter {
   }
 
   private async replacePrices(jobInformation: JobInformation): Promise<void> {
-    const prices = this._document.querySelectorAll(
-      `${PRICE_VALUE_SELECTOR}:not([${ORIGINAL_VALUE_ATTRIBUTE}])`,
+    const filteredPrices = this._document.querySelectorAll(
+      PRICE_VALUE_SELECTORS.join(','),
     );
+    const prices = Array.from(filteredPrices).filter((element) => {
+      return !element.querySelector(CONVERTED_TAG);
+    });
 
     if (!prices) return;
 
     await Promise.all(
       Array.from(prices, async (priceElement) => {
         const originalValue = priceElement!.textContent;
-        const price = +originalValue!.replace(/\./g, '');
+        const regex = /\d+/g;
+        const matches = originalValue.match(regex);
+        const price = +matches.join('');
         const priceConvertion = jobInformation.getTimeConvertion(
           price,
           await this.getElementCurrency(priceElement),
@@ -69,7 +78,7 @@ export class MeliPriceConverter implements PriceConverter {
   private async getElementCurrency(element: Element): Promise<Currency> {
     const isPriceInDolars = element.parentElement
       ?.getAttribute('aria-label')
-      .includes(USD_KEYWORD);
+      ?.includes(USD_KEYWORD);
 
     return isPriceInDolars ? Currency.USD : Currency.ARS;
   }
@@ -108,6 +117,6 @@ export class MeliPriceConverter implements PriceConverter {
     newContent: string,
   ) {
     element.setAttribute(ORIGINAL_VALUE_ATTRIBUTE, originalContent);
-    element.textContent = newContent;
+    element.innerHTML = newContent + `<${CONVERTED_TAG}>`;
   }
 }

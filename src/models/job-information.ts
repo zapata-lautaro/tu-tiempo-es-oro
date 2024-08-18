@@ -40,6 +40,14 @@ export class JobInformation implements JobInformationProps {
     );
   }
 
+  public hasMissingData(): boolean {
+    return (
+      this.salaryInOriginalCurrency() == 0 ||
+      this.laboralDaysPerWeek == 0 ||
+      this.hoursPerLaboralDay == 0
+    );
+  }
+
   public salaryInOriginalCurrency(): number {
     return this.salaryInCurrency(this.currency);
   }
