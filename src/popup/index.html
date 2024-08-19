@@ -7,40 +7,47 @@
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <h1>Tu tiempo es &#129689;</h1>
+    <div class="popup-container">
+      <header class="header">
+        <h1>Tu tiempo es <span class="coin-icon">🪙</span></h1>
+      </header>
+      <div class="content">
+        <div id="enableSwitchContainer" class="toggle-container">
+          <label class="toggle-label" for="page-support-toggle"
+            >Habilitar para esta pagina</label
+          >
+          <input type="checkbox" id="enableSwitch" class="toggle" />
+        </div>
+        <form class="salary-form">
+          <div class="input-group">
+            <label for="salary">Tu sueldo mensual:</label>
+            <div class="input-flex">
+              <input type="number" id="salary" class="input-field" />
+              <select id="currency" class="input-select">
+                <option value="USD">USD</option>
+                <option value="ARS">ARS</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-group horizontal-group">
+            <div class="half-input">
+              <label for="hours">Horas por día:</label>
+              <input type="number" id="hoursPerDay" class="input-field" />
+            </div>
+            <div class="half-input">
+              <label for="days">Días por semana:</label>
+              <input type="number" id="daysPerWeek" class="input-field" />
+            </div>
+          </div>
+        </form>
 
-    <label class="toggle">
-      <input id="active" class="toggle-checkbox" type="checkbox" />
-      <div class="toggle-switch"></div>
-      <span class="toggle-label" id="toggle-label"
-        >Activado en esta pagina</span
-      > </label
-    ><br />
-
-    <label for="salary">Tu sueldo mensual:</label><br />
-    <div class="salary">
-      <input type="number" id="salary" />
-      <select id="currency">
-        <option value="ARS">ARS</option>
-        <option value="USD">USD</option>
-      </select>
+        <div class="exchange-rate">
+          💵 <span class="rate">Dólar:</span>
+          <span id="dolarBid" class="rate-value"></span> compra /
+          <span id="dolarAsk" class="rate-value"></span> venta
+        </div>
+      </div>
     </div>
-
-    <label for="hoursPerDay">Horas de trabajo por día:</label><br />
-    <div class="hoursPerDay">
-      <input type="number" id="hoursPerDay" />
-    </div>
-
-    <label for="daysPerWeek">Días de trabajo por semana:</label><br />
-    <div class="daysPerWeek">
-      <input type="number" id="daysPerWeek" />
-    </div>
-
-    <div class="dolar-convertion">
-      Precio dolar:
-      <span id="dolarBid"></span> compra / <span id="dolarAsk"></span> venta
-    </div>
-
     <script type="module" src="../popup.js"></script>
   </body>
 </html>
