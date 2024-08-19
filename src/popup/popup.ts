@@ -38,7 +38,6 @@ hoursPerDayInput.oninput = daysPerWeekInput.onchange = debounce(
 );
 domainEnableCheckbox.oninput = debounce(handleEnableSwitchChange);
 document.body.onload = async () => {
-  console.log('asdasdas');
   await setStorageDataValues();
   await setCurrentDomainConfiguration();
 };
@@ -58,7 +57,6 @@ async function setStorageDataValues() {
 }
 
 async function setCurrentDomainConfiguration() {
-  console.log('asdasdas');
   const domain = await getCurrentDomain();
   const currentDomainKey = getKeyForDomain(domain);
   if (!currentDomainKey) {
@@ -81,7 +79,6 @@ async function getCurrentDomain(): Promise<string> {
 }
 
 async function handleSalaryChange() {
-  console.log('asdasdas');
   const salary = +salaryInput.value;
   const currency = currencySelect.value;
 
@@ -95,7 +92,6 @@ async function handleSalaryChange() {
 }
 
 async function handleLaboralDaysChange() {
-  console.log('asdasdas');
   const hoursPerDay = +hoursPerDayInput.value;
   const daysPerWeek = +daysPerWeekInput.value;
 
