@@ -17,7 +17,9 @@ jobs:
         with:
           node-version: 20
       - name: Build
-        run: npm run build
+        run: |
+          npm install
+          npm run build
       - name: Zip dist folder
         run: zip -r dist.zip /dist
       - name: Upload & release
