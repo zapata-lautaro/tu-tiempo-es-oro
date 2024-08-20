@@ -1,0 +1,31 @@
+name: Deploy extension
+
+on:
+  workflow_dispatch:
+    branches:
+      - main
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main' # Ensures the workflow runs only on the main branch
+    name: Publish webextension
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 20
+      - name: Build
+        run: npm run build
+      - name: Zip dist folder
+        run: zip -r dist.zip /dist
+      - name: Upload & release
+        uses: mnao305/chrome-extension-upload@v5.0.0
+        with:
+          file-path: dist/dist.zip
+          extension-id: $EXTENSION_ID
+          client-id: ${{ secrets.GPC_CLIENT_ID }}
+          client-secret: ${{ secrets.GPC_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.GPC_REFRESH_TOKEN }}
+          publish-target: trustedTesters
