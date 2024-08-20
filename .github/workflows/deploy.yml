@@ -24,7 +24,7 @@ jobs:
         with:
           file-path: dist/dist.zip
           extension-id: ${{ vars.EXTENSION_ID }}
-          client-id: ${{ secrets.GPC_CLIENT_ID }}
-          client-secret: ${{ secrets.GPC_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.GPC_REFRESH_TOKEN }}
+          client-id: ${{ secrets.GCP_CLIENT_ID }}
+          client-secret: ${{ secrets.GCP_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.GCP_REFRESH_TOKEN }}
           publish-target: trustedTesters
