@@ -18,7 +18,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Zip dist folder
-        run: zip -r dist.zip /dist
+        run: zip -r dist.zip dist
       - name: Upload & release
         uses: mnao305/chrome-extension-upload@v5.0.0
         with:
