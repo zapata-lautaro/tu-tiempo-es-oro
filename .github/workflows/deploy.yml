@@ -12,10 +12,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 20
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm install
       - name: Build
         run: npm run build
       - name: Zip dist folder
