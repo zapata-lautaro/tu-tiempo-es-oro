@@ -1,19 +1,25 @@
 import { Currency } from '../../models/currency.enum';
 import { JobInformation } from '../../models/job-information';
-import { PriceConverter, TIME_SYMBOL } from './price-converter.interface';
+import {
+  PriceConverter,
+  CONVERTED_TAG,
+  ORIGINAL_VALUE_ATTRIBUTE,
+  TIME_SYMBOL,
+} from './price-converter.interface';
 
 const PRICE_VALUE_SELECTORS = [
-  '.andes-money-amount__fraction',
-  '.dynamic-carousel__price span',
+  '.price span:last-child',
+  '.text-no-wrap.grey--text.font-2 span:last-child',
+  '.discount-tag-price',
+  'div[alternativediscountposition] .text-no-wrap.grey--text span:last-child',
 ];
-const PRICE_SYMBOL_SELECTOR = '.andes-money-amount__currency-symbol';
-const CENTS_SELECTOR = '.andes-money-amount__cents';
-const ORIGINAL_VALUE_ATTRIBUTE = 'data-original-value';
-const CONVERTED_TAG = 'converted';
-const HIDE_CLASS = 'time-convertion-hide';
-const USD_KEYWORD = 'dólares';
+const PRICE_SYMBOL_SELECTORS = [
+  '.price span:nth-child(2)',
+  '.text-no-wrap.grey--text.font-2 span:nth-child(2)',
+  'div[alternativediscountposition] .text-no-wrap.grey--text span:nth-child(2)',
+];
 
-export class MeliPriceConverter implements PriceConverter {
+export class GarbarinoPriceConverter implements PriceConverter {
   constructor(private _document: Document) {}
 
   async convert(jobInformation: JobInformation): Promise<void> {
@@ -23,12 +29,10 @@ export class MeliPriceConverter implements PriceConverter {
 
     await this.replacePrices(jobInformation);
     await this.replaceSymbols();
-    await this.removeCents();
   }
 
   async revert(): Promise<void> {
     await this.revertConvertedElements();
-    await this.showCents();
   }
 
   private async revertConvertedElements() {
@@ -57,12 +61,12 @@ export class MeliPriceConverter implements PriceConverter {
     await Promise.all(
       Array.from(prices, async (priceElement) => {
         const originalValue = priceElement!.textContent;
-        const regex = /\d+/g;
+        const regex = /(?<!,)\b\d+/g;
         const matches = originalValue.match(regex);
         const price = +matches.join('');
         const priceConvertion = jobInformation.getTimeConvertion(
           price,
-          await this.getElementCurrency(priceElement),
+          Currency.ARS,
         );
 
         return this.convertElement(
@@ -74,17 +78,9 @@ export class MeliPriceConverter implements PriceConverter {
     );
   }
 
-  private async getElementCurrency(element: Element): Promise<Currency> {
-    const isPriceInDolars = element.parentElement
-      ?.getAttribute('aria-label')
-      ?.includes(USD_KEYWORD);
-
-    return isPriceInDolars ? Currency.USD : Currency.ARS;
-  }
-
   private async replaceSymbols(): Promise<void> {
     const filteredCurrencySimbols = this._document.querySelectorAll(
-      PRICE_SYMBOL_SELECTOR,
+      PRICE_SYMBOL_SELECTORS.join(','),
     );
     const currencySimbols = Array.from(filteredCurrencySimbols).filter(
       (element) => {
@@ -97,22 +93,6 @@ export class MeliPriceConverter implements PriceConverter {
         this.convertElement(symbolElement, originalValue, TIME_SYMBOL);
       }),
     );
-  }
-
-  private async removeCents() {
-    const cents = this._document.querySelectorAll(
-      `${CENTS_SELECTOR}:not(.${HIDE_CLASS})`,
-    );
-    cents.forEach((cent) => {
-      cent.classList.add(HIDE_CLASS);
-    });
-  }
-
-  private async showCents() {
-    const cents = this._document.querySelectorAll(CENTS_SELECTOR);
-    cents.forEach((cent) => {
-      cent.classList.remove(HIDE_CLASS);
-    });
   }
 
   private async convertElement(
