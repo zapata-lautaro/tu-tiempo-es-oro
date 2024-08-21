@@ -18,7 +18,8 @@
       "js": ["content.js"],
       "matches": [
         "https://*.mercadolibre.com.ar/*",
-        "https://*.garbarino.com/*"
+        "https://*.garbarino.com/*",
+        "https://*.fravega.com/*"
       ],
       "css": ["styles/content.css"]
     }
