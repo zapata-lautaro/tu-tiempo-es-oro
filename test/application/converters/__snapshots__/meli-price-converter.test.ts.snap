@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`convert should replace prices again if values were overlaped after convertion 1`] = `
+"
+    <span class="andes-money-amount" aria-label="500 dólares">
+        <span class="andes-money-amount__currency-symbol" data-original-value="U$D">⏱️<converted></converted></span>
+        <span class="andes-money-amount__fraction" data-original-value="500">2 Semanas<converted></converted></span>
+        <span class="andes-money-amount__cents time-convertion-hide">44</span>
+    </span>
+"
+`;
+
 exports[`convert should replace prices and currency simbols 1`] = `
 "
     <span class="andes-money-amount" aria-label="1000000 pesos">

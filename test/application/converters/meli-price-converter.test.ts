@@ -18,6 +18,14 @@ const originalMeliPesosHtml = `
     </span>
 `;
 
+const meliWithOverlapedValuesAfterConvertionHtml = `
+    <span class="andes-money-amount" aria-label="500 dólares">
+        <span class="andes-money-amount__currency-symbol" data-original-value="U$D">U$D</span>
+        <span class="andes-money-amount__fraction" data-original-value="500">500</span>
+        <span class="andes-money-amount__cents time-convertion-hide">44</span>
+    </span>
+`;
+
 const originalMeliDolaresHtml = `
     <span class="andes-money-amount" aria-label="500 dólares">
         <span class="andes-money-amount__currency-symbol">U$D</span>
@@ -48,6 +56,15 @@ describe('convert', () => {
 
   it('should replace prices in usd and currency simbols', async () => {
     document.body.innerHTML = originalMeliDolaresHtml;
+
+    const meliPriceConverter = new MeliPriceConverter(document);
+    await meliPriceConverter.convert(jobInformation);
+
+    expect(document.body.innerHTML).toMatchSnapshot();
+  });
+
+  it('should replace prices again if values were overlaped after convertion', async () => {
+    document.body.innerHTML = meliWithOverlapedValuesAfterConvertionHtml;
 
     const meliPriceConverter = new MeliPriceConverter(document);
     await meliPriceConverter.convert(jobInformation);
