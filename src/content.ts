@@ -11,7 +11,7 @@ import {
   getConverterForDomain,
   getKeyForDomain,
 } from './application/converters/price-converters-factory';
-import { PriceConverter } from './application/converters/price-converter.interface';
+import { PriceConverter } from './application/converters/price-converter';
 import { DomainConfigurationProps } from './models/domain-configuration';
 
 let observer: MutationObserver;

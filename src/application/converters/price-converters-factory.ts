@@ -2,7 +2,7 @@ import { FravegaPriceConverter } from './fravega-price-converter';
 import { GarbarinoPriceConverter } from './garbarino-price-converter';
 import { MeliPriceConverter } from './meli-price-converter';
 import { MusimundoPriceConverter } from './musimundo-price-converter';
-import { PriceConverter } from './price-converter.interface';
+import { PriceConverter } from './price-converter';
 
 const MELI_DOMAIN_REGEX = /^https:\/\/([^.]+\.)?mercadolibre\.com\.ar(\/.*)?/;
 const GARBARINO_DOMAIN_REGEX = /^https:\/\/([^.]+\.)?garbarino\.com(\/.*)?/;
