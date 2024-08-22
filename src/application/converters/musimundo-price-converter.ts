@@ -18,6 +18,14 @@ const PRICE_VALUE_SELECTORS: PriceSelector[] = [
     selector: '.mus-pro-quotes-price',
     includeSymbol: false,
   },
+  {
+    selector: '.mus-pro-price-saving span:last-child',
+    includeSymbol: true,
+  },
+  {
+    selector: '.mus-pro-price-cash .line-trought',
+    includeSymbol: true,
+  },
 ];
 const PRICE_SYMBOL_SELECTORS = ['.mus-pro-quotes-currency'];
 const CENTS_SELECTORS = ['.mus-pro-quotes-decimals'];
