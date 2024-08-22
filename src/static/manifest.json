@@ -19,7 +19,8 @@
       "matches": [
         "https://*.mercadolibre.com.ar/*",
         "https://*.garbarino.com/*",
-        "https://*.fravega.com/*"
+        "https://*.fravega.com/*",
+        "https://*.musimundo.com/*"
       ],
       "css": ["styles/content.css"]
     }
