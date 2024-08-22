@@ -20,7 +20,8 @@
         "https://*.mercadolibre.com.ar/*",
         "https://*.garbarino.com/*",
         "https://*.fravega.com/*",
-        "https://*.musimundo.com/*"
+        "https://*.musimundo.com/*",
+        "https://*.amazon.com/*"
       ],
       "css": ["styles/content.css"]
     }

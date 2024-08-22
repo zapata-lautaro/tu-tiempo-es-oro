@@ -1,3 +1,4 @@
+import { AmazonPriceConverter } from './amazon-price-converter';
 import { FravegaPriceConverter } from './fravega-price-converter';
 import { GarbarinoPriceConverter } from './garbarino-price-converter';
 import { MeliPriceConverter } from './meli-price-converter';
@@ -8,6 +9,7 @@ const MELI_DOMAIN_REGEX = /^https:\/\/([^.]+\.)?mercadolibre\.com\.ar(\/.*)?/;
 const GARBARINO_DOMAIN_REGEX = /^https:\/\/([^.]+\.)?garbarino\.com(\/.*)?/;
 const FRAVEGA_DOMAIN_REGEX = /^https:\/\/([^.]+\.)?fravega\.com(\/.*)?/;
 const MUSIMUNDO_DOMAIN_REGEX = /^https:\/\/([^.]+\.)?musimundo\.com(\/.*)?/;
+const AMAZON_DOMAIN_REGEX = /^https:\/\/([^.]+\.)?amazon\.com(\/.*)?/;
 
 type ConverterFactory = (document: Document) => PriceConverter;
 
@@ -37,6 +39,11 @@ const converters: ConverterEntry[] = [
     key: MusimundoPriceConverter.name,
     matchDomain: (domain: string) => MUSIMUNDO_DOMAIN_REGEX.test(domain),
     factory: (document) => new MusimundoPriceConverter(document),
+  },
+  {
+    key: AmazonPriceConverter.name,
+    matchDomain: (domain: string) => AMAZON_DOMAIN_REGEX.test(domain),
+    factory: (document) => new AmazonPriceConverter(document),
   },
 ];
 

@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { AmazonPriceConverter } from '../../../src/application/converters/amazon-price-converter';
 import { MeliPriceConverter } from '../../../src/application/converters/meli-price-converter';
 import { PriceConverter } from '../../../src/application/converters/price-converter';
 import { Currency } from '../../../src/models/currency.enum';
@@ -67,6 +68,22 @@ describe('convert', () => {
       expectedHtml: `
         <span class="price-value" data-original-value="$1,000.00">
           1 Mes<converted></converted>
+        </span>`,
+    },
+    {
+      caseDescription: 'with AmazonConverter should change to ARS',
+      converter: new AmazonPriceConverter(document),
+      html: `
+        <span class="a-price a-text-price">
+          <span class="a-offscreen">ARS&nbsp;1,000,000.00</span>
+          <span aria-hidden="true">ARS1,000,000.00</span>
+        </span>`,
+      expectedHtml: `
+        <span class="a-price a-text-price">
+          <span class="a-offscreen">ARS&nbsp;1,000,000.00</span>
+          <span aria-hidden="true" data-original-value="ARS1,000,000.00">
+            1 Mes<converted></converted>
+          </span>
         </span>`,
     },
   ];
