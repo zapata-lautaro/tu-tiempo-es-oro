@@ -5,6 +5,7 @@ export const TIME_SYMBOL = `⏱️`;
 export const ORIGINAL_VALUE_ATTRIBUTE = 'data-original-value';
 export const CONVERTED_TAG = 'converted';
 export const HIDE_CLASS = 'time-convertion-hide';
+export const DEFAULT_DECIMAL_SEPARATOR = ',';
 
 export interface PriceSelector {
   selector: string;
@@ -18,6 +19,7 @@ export abstract class PriceConverter {
     private _priceSymbolSelectors: string[],
     private _centsSelectors: string[],
     private _defaultCurrency: Currency,
+    private _decimalSeparator: string = DEFAULT_DECIMAL_SEPARATOR,
   ) {}
 
   public async convert(jobInformation: JobInformation): Promise<void> {
@@ -60,9 +62,11 @@ export abstract class PriceConverter {
       await Promise.all(
         Array.from(prices, async (priceElement) => {
           const originalValue = priceElement!.textContent;
-          const regex = /(?<!,)\b\d+/g;
-          const matches = originalValue.match(regex);
-          const price = +matches.join('');
+          const holeNumber = originalValue.includes(this._decimalSeparator)
+            ? originalValue.split(this._decimalSeparator)[0]
+            : originalValue;
+          const matches = holeNumber.match(/\d+/g);
+          const price = +matches?.join('') ?? 0;
           const priceConvertion = jobInformation.getTimeConvertion(
             price,
             this.priceElementCurrencyGetter(priceElement),
@@ -85,6 +89,8 @@ export abstract class PriceConverter {
   }
 
   private async replaceSymbols(): Promise<void> {
+    if (this._priceSymbolSelectors.length == 0) return;
+
     const filteredCurrencySimbols = this._document.querySelectorAll(
       this._priceSymbolSelectors.join(','),
     );
@@ -102,6 +108,8 @@ export abstract class PriceConverter {
   }
 
   private async removeCents() {
+    if (this._centsSelectors.length == 0) return;
+
     const cents = this._document.querySelectorAll(
       this._centsSelectors
         .map((selector) => `${selector}:not(.${HIDE_CLASS})`)
@@ -113,6 +121,8 @@ export abstract class PriceConverter {
   }
 
   private async showCents() {
+    if (this._centsSelectors.length == 0) return;
+
     const cents = this._document.querySelectorAll(
       this._centsSelectors.join(','),
     );

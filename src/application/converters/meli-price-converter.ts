@@ -17,6 +17,7 @@ export class MeliPriceConverter extends PriceConverter {
       PRICE_SYMBOL_SELECTORS,
       CENTS_SELECTORS,
       Currency.ARS,
+      '.',
     );
   }
 
