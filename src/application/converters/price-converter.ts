@@ -77,6 +77,7 @@ export abstract class PriceConverter {
             originalValue,
             (priceSelector.includeSymbol ? `${TIME_SYMBOL} ` : '') +
               priceConvertion.toShortStringRepresentation(),
+            `($${price}) ${priceConvertion.toFullStringRepresentation()}`,
           );
         }),
       );
@@ -135,8 +136,26 @@ export abstract class PriceConverter {
     element: Element,
     originalContent: string,
     newContent: string,
+    tooltipContent?: string,
   ) {
     element.setAttribute(ORIGINAL_VALUE_ATTRIBUTE, originalContent);
-    element.innerHTML = newContent + `<${CONVERTED_TAG}>`;
+    element.innerHTML = newContent + `<${CONVERTED_TAG}></${CONVERTED_TAG}>`;
+
+    if (!tooltipContent) return;
+
+    element.addEventListener('mouseover', function () {
+      const parentRect = this.getBoundingClientRect();
+      const tooltip = document.createElement('tool-tip');
+      tooltip.innerHTML = tooltipContent;
+      document.body.insertAdjacentElement('afterbegin', tooltip);
+      tooltip.style.top = `${parentRect.bottom}px`;
+      tooltip.style.left = `${parentRect.left}px`;
+      tooltip.style.display = 'block';
+    });
+
+    element.addEventListener('mouseout', function () {
+      const tooltip = document.querySelector('tool-tip');
+      tooltip.remove();
+    });
   }
 }
