@@ -1,9 +1,5 @@
 import { Currency } from '../../models/currency.enum';
-import {
-  ORIGINAL_VALUE_ATTRIBUTE,
-  PriceConverter,
-  PriceSelector,
-} from './price-converter';
+import { PriceConverter, PriceSelector } from './price-converter';
 
 const PRICE_VALUE_SELECTORS: PriceSelector[] = [
   {
