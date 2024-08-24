@@ -66,6 +66,10 @@ export class TimeConvertion {
       );
     }
 
-    return stringRepresentationChunks.join(' ');
+    if (stringRepresentationChunks.length == 1) {
+      return stringRepresentationChunks[0];
+    }
+
+    return `${stringRepresentationChunks.slice(0, -1).join(', ')} y ${stringRepresentationChunks.slice(-1)}`;
   }
 }
