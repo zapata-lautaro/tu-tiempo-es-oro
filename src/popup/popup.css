@@ -156,3 +156,30 @@ body {
   font-size: 0.7rem;
   font-weight: bold;
 }
+
+.calculator-section {
+  margin: 0.5rem 0;
+  border: 2px solid #638043;
+  border-radius: 9px;
+  padding: 0.5rem;
+}
+
+.calculator-section h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+#calculate-button {
+  height: 25px;
+  width: 100%;
+  cursor: pointer;
+  color: #a4d371;
+  background: transparent;
+  border: 1px solid #638043;
+  border-radius: 5px;
+}
+
+#calculate-button:hover {
+  background: #3d3d3d;
+}
