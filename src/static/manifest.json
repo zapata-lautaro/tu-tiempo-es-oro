@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Tu tiempo es oro",
   "description": "Transforma los precios de los productos a tiempo en base a tu sueldo",
-  "version": "1.0",
+  "version": "1.1",
   "action": {
     "default_popup": "popup/index.html",
     "default_icon": "icons/icon128.png"
