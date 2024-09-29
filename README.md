@@ -13,4 +13,4 @@ The main features of this extension will be:
 
 This extension has 2 proposes, first: It gave me the chance to learn about chrome extension development, and second I think It would be a useful tool for people to start associating the prices of products with the time it costs them to earn that money, and luckily make them think twice before do an impulsive purchase.
 
-[Chrome webstore link](https://blog.logrocket.com/linting-typescript-eslint-prettier/#:~:text=In%20summary%2C%20ESLint%20and%20Prettier,formatting%20code%20to%20maintain%20consistency.)
+[Chrome webstore link](https://chromewebstore.google.com/detail/tu-tiempo-es-oro/ajojlaonnngnacbpegkigojkhcpchhko?authuser=0&hl=es)
